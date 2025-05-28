@@ -11,7 +11,7 @@ interface ChangeOrderStatusUseCaseRequest {
 }
 
 type ChangeOrderStatusUseCaseResponse = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | InvalidStatusTransition,
   {
     order: Order
   }

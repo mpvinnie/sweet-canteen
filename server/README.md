@@ -54,9 +54,9 @@ RN020: Se um pedido for cancelado, a quantidade dos itens deve ser devolvida ao 
 
 ## Permissões
 
-RN021: Atendentes têm permissão para: registrar pedidos, consultar menu e visualizar pedidos.
+RN021: Atendentes têm permissão para: registrar pedidos, consultar menu, visualizar pedidos e gerenciar usuários.
 
-RN022: Cozinheiros têm permissão para: visualizar pedidos em aberto e alterar seu status.
+RN022: Cozinheiros têm permissão para: visualizar pedidos em aberto, alterar seu status e gerenciar usuários.
 
 RN023: Administradores têm permissão total: gerenciar usuários e o menu.
 
