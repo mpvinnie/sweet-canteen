@@ -1,4 +1,5 @@
 export type Permission =
+  | 'register_attendant'
   | 'register_product'
   | 'edit_product'
   | 'delete_product'

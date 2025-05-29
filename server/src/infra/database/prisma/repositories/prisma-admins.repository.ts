@@ -7,7 +7,8 @@ export class PrismaAdminsRepository implements AdminsRepository {
   async findByUsername(username: string) {
     const admin = await prisma.user.findUnique({
       where: {
-        username
+        username,
+        role: 'ADMIN'
       }
     })
 
