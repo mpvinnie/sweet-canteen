@@ -4,7 +4,7 @@ export type Role = 'admin' | 'attendant' | 'cook'
 
 export const RolePermissions: Record<Role, Permission[]> = {
   admin: [
-    'register_attendant',
+    'register_employee',
     'register_product',
     'edit_product',
     'delete_product',

@@ -1,8 +1,9 @@
 import { makeRegisterAttendantUseCase } from '@/infra/factories/make-register-attendant'
+import { makeRegisterCookUseCase } from '@/infra/factories/make-register-cook'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
-const registerAttendantBodySchema = z.object({
+const registerEmployeeBodySchema = z.object({
   name: z.string(),
   username: z
     .string()
@@ -12,20 +13,32 @@ const registerAttendantBodySchema = z.object({
       message:
         'Username must contain only letters, numbers, underscores, dots or dashes'
     }),
-  password: z.string()
+  password: z.string(),
+  role: z.enum(['attendant', 'cook'])
 })
 
-export async function registerAttendant(
+export async function registerEmployee(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { name, username, password } = registerAttendantBodySchema.parse(
+  const { name, username, password, role } = registerEmployeeBodySchema.parse(
     request.body
   )
 
-  const registerAttendant = makeRegisterAttendantUseCase()
+  let useCase
 
-  const result = await registerAttendant.execute({
+  switch (role) {
+    case 'attendant':
+      useCase = makeRegisterAttendantUseCase()
+      break
+    case 'cook':
+      useCase = makeRegisterCookUseCase()
+      break
+    default:
+      return reply.status(400).send({ message: 'Invalid role.' })
+  }
+
+  const result = await useCase.execute({
     name,
     username,
     password

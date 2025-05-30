@@ -11,8 +11,7 @@ export class PrismaAttendantsRepository implements AttendantsRepository {
   async findById(attendantId: string) {
     const attendant = await prisma.user.findUnique({
       where: {
-        id: attendantId,
-        role: 'ATTENDANT'
+        id: attendantId
       }
     })
 
@@ -26,8 +25,7 @@ export class PrismaAttendantsRepository implements AttendantsRepository {
   async findByUsername(username: string) {
     const attendant = await prisma.user.findUnique({
       where: {
-        username,
-        role: 'ATTENDANT'
+        username
       }
     })
 
