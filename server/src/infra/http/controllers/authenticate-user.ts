@@ -1,22 +1,22 @@
 import { RolePermissions } from '@/core/types/role'
-import { makeAuthenticateAdminUseCase } from '@/infra/factories/make-authenticate-admin'
+import { makeAuthenticateUserUseCase } from '@/infra/factories/make-authenticate-user'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
-const authenticateAdminBodySchema = z.object({
+const authenticateUserBodySchema = z.object({
   username: z.string(),
   password: z.string()
 })
 
-export async function authenticateAdmin(
+export async function authenticateUser(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { username, password } = authenticateAdminBodySchema.parse(request.body)
+  const { username, password } = authenticateUserBodySchema.parse(request.body)
 
-  const authenticateAdmin = makeAuthenticateAdminUseCase()
+  const authenticateUser = makeAuthenticateUserUseCase()
 
-  const result = await authenticateAdmin.execute({
+  const result = await authenticateUser.execute({
     username,
     password
   })

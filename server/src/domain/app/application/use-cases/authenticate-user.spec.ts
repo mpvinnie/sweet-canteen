@@ -1,47 +1,47 @@
 import { FakeHashProvider } from 'test/providers/fake-hash.provider'
-import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admins.repository'
-import { AuthenticateAdminUseCase } from './authenticate-admin'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users.repository'
+import { AuthenticateUserUseCase } from './authenticate-user'
 import { makeAdmin } from 'test/factories/make-admin'
 import { Username } from './value-objects/username'
 import { unwrapOrFail } from '@/core/either'
 import { WrongCredentialsError } from './errors/wrong-credentials.error'
 
-let adminsRepository: InMemoryAdminsRepository
+let usersRepository: InMemoryUsersRepository
 let hashProvider: FakeHashProvider
-let sut: AuthenticateAdminUseCase
+let sut: AuthenticateUserUseCase
 
-describe('Authenticate admin', () => {
+describe('Authenticate user', () => {
   beforeEach(() => {
-    adminsRepository = new InMemoryAdminsRepository()
+    usersRepository = new InMemoryUsersRepository()
     hashProvider = new FakeHashProvider()
-    sut = new AuthenticateAdminUseCase(adminsRepository, hashProvider)
+    sut = new AuthenticateUserUseCase(usersRepository, hashProvider)
   })
 
-  it('should be able to authenticate an admin', async () => {
-    const admin = makeAdmin({
-      username: unwrapOrFail(Username.create('admin.username')),
+  it('should be able to authenticate an user', async () => {
+    const user = makeAdmin({
+      username: unwrapOrFail(Username.create('user.username')),
       passwordHash: await hashProvider.hash('password')
     })
 
-    adminsRepository.create(admin)
+    usersRepository.create(user)
 
     const result = await sut.execute({
-      username: 'admin.username',
+      username: 'user.username',
       password: 'password'
     })
 
     expect(result.isRight()).toBe(true)
     expect(result.value).toMatchObject({
       payload: expect.objectContaining({
-        userId: admin.id.toString(),
-        role: admin.role
+        userId: user.id.toString(),
+        role: user.role
       })
     })
   })
 
-  it('should not be able to authenticate an admin with invalid username', async () => {
+  it('should not be able to authenticate an user with invalid username', async () => {
     const result = await sut.execute({
-      username: 'non.existent.admin.username',
+      username: 'non.existent.user.username',
       password: 'password'
     })
 
@@ -49,16 +49,16 @@ describe('Authenticate admin', () => {
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
-  it('should not be able to authenticate an admin with wrong password', async () => {
-    const admin = makeAdmin({
-      username: unwrapOrFail(Username.create('admin.username')),
+  it('should not be able to authenticate an user with wrong password', async () => {
+    const user = makeAdmin({
+      username: unwrapOrFail(Username.create('user.username')),
       passwordHash: await hashProvider.hash('password')
     })
 
-    adminsRepository.create(admin)
+    usersRepository.create(user)
 
     const result = await sut.execute({
-      username: 'admin.username',
+      username: 'user.username',
       password: 'wrong_password'
     })
 

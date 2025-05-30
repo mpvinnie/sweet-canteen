@@ -1,15 +1,15 @@
 import { Either, left, right } from '@/core/either'
-import { AttendantsRepository } from '../repositories/attendants.repository'
+import { UsersRepository } from '../repositories/users.repository'
 import { WrongCredentialsError } from './errors/wrong-credentials.error'
 import { HashProvider } from '../providers/hash.provider'
 import { Role } from '@/core/types/role'
 
-interface AuthenticateAttendantUseCaseRequest {
+interface AuthenticateUserUseCaseRequest {
   username: string
   password: string
 }
 
-type AuthenticateAttendantUseCaseResponse = Either<
+type AuthenticateUserUseCaseResponse = Either<
   WrongCredentialsError,
   {
     payload: {
@@ -19,25 +19,25 @@ type AuthenticateAttendantUseCaseResponse = Either<
   }
 >
 
-export class AuthenticateAttendantUseCase {
+export class AuthenticateUserUseCase {
   constructor(
-    private attendantsRepository: AttendantsRepository,
+    private usersRepository: UsersRepository,
     private hashProvider: HashProvider
   ) {}
 
   async execute({
     username,
     password
-  }: AuthenticateAttendantUseCaseRequest): Promise<AuthenticateAttendantUseCaseResponse> {
-    const attendant = await this.attendantsRepository.findByUsername(username)
+  }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserUseCaseResponse> {
+    const user = await this.usersRepository.findByUsername(username)
 
-    if (!attendant) {
+    if (!user) {
       return left(new WrongCredentialsError())
     }
 
     const doesPasswordMatches = await this.hashProvider.compare(
       password,
-      attendant.passwordHash
+      user.passwordHash
     )
 
     if (!doesPasswordMatches) {
@@ -46,8 +46,8 @@ export class AuthenticateAttendantUseCase {
 
     return right({
       payload: {
-        userId: attendant.id.toString(),
-        role: attendant.role
+        userId: user.id.toString(),
+        role: user.role
       }
     })
   }
