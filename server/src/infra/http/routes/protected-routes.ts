@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { fetchProducts } from '../controllers/fetch-products'
+import { getProductById } from '../controllers/get-product-by-id'
 import { registerEmployee } from '../controllers/register-employee'
 import { registerProduct } from '../controllers/register-product'
 import { toggleProductAvailability } from '../controllers/toggle-product-availability'
@@ -37,6 +38,17 @@ export async function protectedRoutes(app: FastifyInstance) {
       ]
     },
     fetchProducts
+  )
+  app.get(
+    '/products/:productId',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['list_products']
+        })
+      ]
+    },
+    getProductById
   )
   app.put(
     '/products/:productId',

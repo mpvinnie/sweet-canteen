@@ -107,6 +107,37 @@ export class InMemoryProductsRepository implements ProductsRepository {
     return product
   }
 
+  async findByIdWithCategory(id: string) {
+    const product = this.items.find(product => product.id.toString() === id)
+
+    if (!product) {
+      return null
+    }
+
+    const category = this.categoriesRepository.items.find(category =>
+      category.id.equals(product.categoryId)
+    )
+
+    if (!category) {
+      throw new Error(
+        `Category with ID "${product.categoryId.toString()}" does not exist.`
+      )
+    }
+
+    return ProductWithCategory.create({
+      productId: product.id,
+      name: product.name,
+      description: product.description,
+      priceInCents: product.priceInCents,
+      availableQuantity: product.availableQuantity,
+      categoryId: product.categoryId,
+      category: category.name,
+      available: product.available,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt
+    })
+  }
+
   async create(product: Product) {
     this.items.push(product)
   }

@@ -2,7 +2,7 @@ import { makeToggleProductAvailability } from '@/infra/factories/make-toggle-pro
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
-const toggleProductAvailabilityBodySchema = z.object({
+const toggleProductAvailabilityParamsSchema = z.object({
   productId: z.string().uuid()
 })
 
@@ -10,7 +10,7 @@ export async function toggleProductAvailability(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { productId } = toggleProductAvailabilityBodySchema.parse(
+  const { productId } = toggleProductAvailabilityParamsSchema.parse(
     request.params
   )
 

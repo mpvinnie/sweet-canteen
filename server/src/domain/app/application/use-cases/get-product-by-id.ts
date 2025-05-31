@@ -1,7 +1,7 @@
 import { Either, left, right } from '@/core/either'
-import { Product } from '../../enterprise/entities/product'
-import { ProductsRepository } from '../repositories/products.repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { ProductsRepository } from '../repositories/products.repository'
+import { ProductWithCategory } from './value-objects/product-with-category'
 
 interface GetProductByIdUseCaseRequest {
   productId: string
@@ -9,7 +9,7 @@ interface GetProductByIdUseCaseRequest {
 
 type GetProductByIdUseCaseResponse = Either<
   ResourceNotFoundError,
-  { product: Product }
+  { product: ProductWithCategory }
 >
 
 export class GetProductByIdUseCase {
@@ -18,7 +18,8 @@ export class GetProductByIdUseCase {
   async execute({
     productId
   }: GetProductByIdUseCaseRequest): Promise<GetProductByIdUseCaseResponse> {
-    const product = await this.productsRepository.findById(productId)
+    const product =
+      await this.productsRepository.findByIdWithCategory(productId)
 
     if (!product) {
       return left(new ResourceNotFoundError())

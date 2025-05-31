@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { ProductWithCategoryPresenter } from '../presenters/product-with-category.presenter'
 import { optionalBooleanParam } from '../validations/optional-boolean-param'
 
-const fetchProductsBodySchema = z.object({
+const fetchProductsQuerySchema = z.object({
   name: z.string().optional(),
   available: optionalBooleanParam(),
   categoryId: z.string().uuid().optional(),
@@ -15,7 +15,7 @@ export async function fetchProducts(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { name, available, categoryId, page } = fetchProductsBodySchema.parse(
+  const { name, available, categoryId, page } = fetchProductsQuerySchema.parse(
     request.query
   )
 

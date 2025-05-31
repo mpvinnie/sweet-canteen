@@ -19,6 +19,7 @@ export interface ProductsRepository {
   ): Promise<ProductWithCategory[]>
   findManyByIds(productIds: string[]): Promise<Product[]>
   findById(id: string): Promise<Product | null>
+  findByIdWithCategory(id: string): Promise<ProductWithCategory | null>
   create(product: Product): Promise<void>
   save(product: Product): Promise<void>
   delete(product: Product): Promise<void>

@@ -78,6 +78,23 @@ export class PrismaProductsRepository implements ProductsRepository {
     return PrismaProductMapper.toDomain(product)
   }
 
+  async findByIdWithCategory(id: string) {
+    const product = await prisma.product.findUnique({
+      where: {
+        id
+      },
+      include: {
+        category: true
+      }
+    })
+
+    if (!product) {
+      return null
+    }
+
+    return PrismaProductWithCategoryMapper.toDomain(product)
+  }
+
   async create(product: Product) {
     await prisma.product.create({
       data: PrismaProductMapper.toPrisma(product)
