@@ -1,0 +1,72 @@
+import { PaginationParams } from '@/core/repositories/pagination-params'
+import {
+  FindManyOrdersFilters,
+  OrdersRepository
+} from '@/domain/app/application/repositories/orders.repository'
+import { Order } from '@/domain/app/enterprise/entities/order'
+import { prisma } from '..'
+import { $Enums } from 'generated/prisma'
+import { PrismaOrderMapper } from '../mappers/prisma-order.mapper'
+
+export class PrismaOrdersRepository implements OrdersRepository {
+  async findMany(
+    { attendantId, customerName, status, date }: FindManyOrdersFilters,
+    { page }: PaginationParams
+  ) {
+    const orders = await prisma.order.findMany({
+      where: {
+        attendantId,
+        customerName: {
+          contains: customerName,
+          mode: 'insensitive'
+        },
+        status: (status?.toUpperCase() as $Enums.OrderStatus) || undefined,
+        createdAt: {
+          gte: date?.from,
+          lte: date?.to
+        }
+      },
+      skip: (page - 1) * 20,
+      take: 20
+    })
+
+    return orders.map(PrismaOrderMapper.toDomain)
+  }
+
+  async findById(orderId: string) {
+    const order = await prisma.order.findUnique({
+      where: {
+        id: orderId
+      }
+    })
+
+    if (!order) {
+      return null
+    }
+
+    return PrismaOrderMapper.toDomain(order)
+  }
+
+  async create(order: Order) {
+    await prisma.order.create({
+      data: PrismaOrderMapper.toPrisma(order)
+    })
+  }
+
+  async delete(order: Order) {
+    await prisma.order.delete({
+      where: {
+        id: order.id.toString()
+      }
+    })
+  }
+
+  async save(order: Order) {
+    await prisma.order.update({
+      where: {
+        id: order.id.toString()
+      },
+      data: PrismaOrderMapper.toPrisma(order)
+    })
+  }
+}

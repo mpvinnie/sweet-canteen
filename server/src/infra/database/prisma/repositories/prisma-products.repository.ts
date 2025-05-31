@@ -15,7 +15,8 @@ export class PrismaProductsRepository implements ProductsRepository {
     const products = await prisma.product.findMany({
       where: {
         name: {
-          contains: name
+          contains: name,
+          mode: 'insensitive'
         },
         available,
         categoryId

@@ -40,7 +40,8 @@ export class PrismaCooksRepository implements CooksRepository {
     const cooks = await prisma.user.findMany({
       where: {
         name: {
-          contains: name
+          contains: name,
+          mode: 'insensitive'
         },
         role: 'COOK'
       },

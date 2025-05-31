@@ -43,7 +43,8 @@ export class PrismaAttendantsRepository implements AttendantsRepository {
     const attendants = await prisma.user.findMany({
       where: {
         name: {
-          contains: name
+          contains: name,
+          mode: 'insensitive'
         },
         role: 'ATTENDANT'
       },
