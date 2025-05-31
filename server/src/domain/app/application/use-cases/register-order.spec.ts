@@ -1,15 +1,16 @@
-import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
-import { makeCategory } from 'test/factories/make-category'
-import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
-import { InMemoryAttendantsRepository } from 'test/repositories/in-memory-attendants.repository'
-import { RegisterOrderUseCase } from './register-order'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 import { makeAttendant } from 'test/factories/make-attendant'
 import { makeProduct } from 'test/factories/make-product'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
-import { InsufficientStockError } from './errors/insufficient-stock.error'
+import { InMemoryAttendantsRepository } from 'test/repositories/in-memory-attendants.repository'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
 import { InMemoryOrderItemsRepository } from 'test/repositories/in-memory-orderItems.repository'
+import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
+import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
+import { InsufficientStockError } from './errors/insufficient-stock.error'
+import { RegisterOrderUseCase } from './register-order'
 
 let attendatsRepository: InMemoryAttendantsRepository
+let categoriesRepository: InMemoryCategoriesRepository
 let productsRepository: InMemoryProductsRepository
 let orderItemsRepository: InMemoryOrderItemsRepository
 let ordersRepository: InMemoryOrdersRepository
@@ -18,7 +19,8 @@ let sut: RegisterOrderUseCase
 describe('Register order', () => {
   beforeEach(() => {
     attendatsRepository = new InMemoryAttendantsRepository()
-    productsRepository = new InMemoryProductsRepository()
+    categoriesRepository = new InMemoryCategoriesRepository()
+    productsRepository = new InMemoryProductsRepository(categoriesRepository)
     orderItemsRepository = new InMemoryOrderItemsRepository()
     ordersRepository = new InMemoryOrdersRepository(orderItemsRepository)
     sut = new RegisterOrderUseCase(

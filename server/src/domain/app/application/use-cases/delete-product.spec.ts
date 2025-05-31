@@ -1,14 +1,17 @@
-import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
-import { makeProduct } from 'test/factories/make-product'
-import { DeleteProductUseCase } from './delete-product'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { makeProduct } from 'test/factories/make-product'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
+import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
+import { DeleteProductUseCase } from './delete-product'
 
+let categoriesRepository: InMemoryCategoriesRepository
 let productsRepository: InMemoryProductsRepository
 let sut: DeleteProductUseCase
 
 describe('Delete product', () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository()
+    categoriesRepository = new InMemoryCategoriesRepository()
+    productsRepository = new InMemoryProductsRepository(categoriesRepository)
     sut = new DeleteProductUseCase(productsRepository)
   })
 

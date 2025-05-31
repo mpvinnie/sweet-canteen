@@ -1,9 +1,8 @@
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { makeProduct } from 'test/factories/make-product'
 import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
-import { makeCategory } from 'test/factories/make-category'
 import { EditProductUseCase } from './edit-product'
-import { makeProduct } from 'test/factories/make-product'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 
 let productsRepository: InMemoryProductsRepository
 let categoriesRepository: InMemoryCategoriesRepository
@@ -11,8 +10,8 @@ let sut: EditProductUseCase
 
 describe('Edit product', () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
+    productsRepository = new InMemoryProductsRepository(categoriesRepository)
     sut = new EditProductUseCase(productsRepository, categoriesRepository)
   })
 

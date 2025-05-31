@@ -1,10 +1,11 @@
 import { Either, left, right } from '@/core/either'
-import { Attendant } from '../../enterprise/entities/attendant'
-import { AttendantsRepository } from '../repositories/attendants.repository'
-import { Username } from './value-objects/username'
-import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
-import { HashProvider } from '../providers/hash.provider'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { Attendant } from '../../enterprise/entities/attendant'
+import { HashProvider } from '../providers/hash.provider'
+import { AttendantsRepository } from '../repositories/attendants.repository'
+import { InvalidUsernameError } from './errors/invalid-username.error'
+import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
+import { Username } from './value-objects/username'
 
 interface EditAttendantUseCaseRequest {
   attendantId: string
@@ -14,7 +15,7 @@ interface EditAttendantUseCaseRequest {
 }
 
 type EditAttendantUseCaseResponse = Either<
-  ResourceNotFoundError | UsernameAlreadyTakenError,
+  ResourceNotFoundError | InvalidUsernameError | UsernameAlreadyTakenError,
   {
     attendant: Attendant
   }

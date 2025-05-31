@@ -1,7 +1,7 @@
-import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
-import { RegisterProductUseCase } from './register-product'
-import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
 import { makeCategory } from 'test/factories/make-category'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
+import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
+import { RegisterProductUseCase } from './register-product'
 
 let productsRepository: InMemoryProductsRepository
 let categoriesRepository: InMemoryCategoriesRepository
@@ -9,8 +9,8 @@ let sut: RegisterProductUseCase
 
 describe('Register product', () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
+    productsRepository = new InMemoryProductsRepository(categoriesRepository)
     sut = new RegisterProductUseCase(productsRepository, categoriesRepository)
   })
 

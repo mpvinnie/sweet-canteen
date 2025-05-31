@@ -1,14 +1,17 @@
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { makeProduct } from 'test/factories/make-product'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
 import { ToggleProductAvailabilityUseCase } from './toggle-product-availability'
-import { makeProduct } from 'test/factories/make-product'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 
+let categoriesRepository: InMemoryCategoriesRepository
 let productsRepository: InMemoryProductsRepository
 let sut: ToggleProductAvailabilityUseCase
 
 describe('Toggle product availability', () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository()
+    categoriesRepository = new InMemoryCategoriesRepository()
+    productsRepository = new InMemoryProductsRepository(categoriesRepository)
     sut = new ToggleProductAvailabilityUseCase(productsRepository)
   })
 
