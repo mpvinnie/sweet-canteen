@@ -3,6 +3,7 @@ import { verifyJWT } from '../middlewares/jwt-verify'
 import { ensurePermissions } from '../middlewares/ensure-permissions'
 import { registerEmployee } from '../controllers/register-employee'
 import { registerProduct } from '../controllers/register-product'
+import { toggleProductAvailability } from '../controllers/toggle-product-availability'
 
 export async function protectedRoutes(app: FastifyInstance) {
   app.addHook('preHandler', verifyJWT)
@@ -24,5 +25,16 @@ export async function protectedRoutes(app: FastifyInstance) {
       ]
     },
     registerProduct
+  )
+  app.put(
+    '/products/:productId',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['edit_product']
+        })
+      ]
+    },
+    toggleProductAvailability
   )
 }
