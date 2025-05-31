@@ -6,7 +6,7 @@ interface DisconnectUserUseCaseRequest {
   userId: string
 }
 
-type DisconnectUserUseCaseResponse = Either<ResourceNotFoundError, {}>
+type DisconnectUserUseCaseResponse = Either<ResourceNotFoundError, null>
 
 export class DisconnectUserUseCase {
   constructor(private onlineUsersRepository: OnlineUsersRepository) {}
@@ -16,6 +16,6 @@ export class DisconnectUserUseCase {
   }: DisconnectUserUseCaseRequest): Promise<DisconnectUserUseCaseResponse> {
     await this.onlineUsersRepository.removeByUserId(userId)
 
-    return right({})
+    return right(null)
   }
 }

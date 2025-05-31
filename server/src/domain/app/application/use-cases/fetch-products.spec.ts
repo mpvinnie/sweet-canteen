@@ -1,20 +1,31 @@
+import { makeCategory } from 'test/factories/make-category'
+import { makeProduct } from 'test/factories/make-product'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories.repository'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
 import { FetchProductsUseCase } from './fetch-products'
-import { makeProduct } from 'test/factories/make-product'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
+let categoriesRepository: InMemoryCategoriesRepository
 let productsRepository: InMemoryProductsRepository
 let sut: FetchProductsUseCase
 
 describe('Fetch products', () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository()
+    categoriesRepository = new InMemoryCategoriesRepository()
+    productsRepository = new InMemoryProductsRepository(categoriesRepository)
     sut = new FetchProductsUseCase(productsRepository)
   })
 
   it('should be able to fetch the products', async () => {
+    const category = makeCategory()
+
+    categoriesRepository.create(category)
+
     for (let i = 1; i <= 10; i++) {
-      await productsRepository.create(makeProduct())
+      await productsRepository.create(
+        makeProduct({
+          categoryId: category.id
+        })
+      )
     }
 
     const result = await sut.execute({ page: 1 })
@@ -24,20 +35,28 @@ describe('Fetch products', () => {
   })
 
   it('should be able to filter the products', async () => {
+    const category01 = makeCategory({
+      name: 'Juice'
+    })
+    const category02 = makeCategory()
+
+    categoriesRepository.create(category01)
+    categoriesRepository.create(category02)
+
     const product01 = makeProduct({
       name: 'Product 01',
-      categoryId: new UniqueEntityID('category-id-01'),
+      categoryId: category01.id,
       available: true
     })
 
     const product02 = makeProduct({
       name: 'Product 01',
-      categoryId: new UniqueEntityID('category-id-01'),
+      categoryId: category01.id,
       availableQuantity: 0
     })
 
     const product03 = makeProduct({
-      categoryId: new UniqueEntityID('category-id-02'),
+      categoryId: category02.id,
       available: true
     })
 
@@ -48,18 +67,33 @@ describe('Fetch products', () => {
     const result = await sut.execute({
       name: 'Product 01',
       available: true,
-      categoryId: 'category-id-01',
+      categoryId: category01.id.toString(),
       page: 1
     })
 
     expect(result.isRight()).toBe(true)
     expect(result.value?.products).toHaveLength(1)
-    expect(result.value?.products[0]).toEqual(product01)
+    expect(result.value?.products).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'Product 01',
+          category: 'Juice'
+        })
+      ])
+    )
   })
 
   it('should be able to fetch paginated products', async () => {
+    const category = makeCategory()
+
+    categoriesRepository.create(category)
+
     for (let i = 1; i <= 22; i++) {
-      await productsRepository.create(makeProduct())
+      await productsRepository.create(
+        makeProduct({
+          categoryId: category.id
+        })
+      )
     }
 
     const result = await sut.execute({ page: 2 })

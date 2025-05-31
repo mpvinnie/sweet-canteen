@@ -1,10 +1,11 @@
 import { Either, left, right } from '@/core/either'
-import { Cook } from '../../enterprise/entities/cook'
-import { CooksRepository } from '../repositories/cooks.repository'
-import { Username } from './value-objects/username'
-import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
-import { HashProvider } from '../providers/hash.provider'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { Cook } from '../../enterprise/entities/cook'
+import { HashProvider } from '../providers/hash.provider'
+import { CooksRepository } from '../repositories/cooks.repository'
+import { InvalidUsernameError } from './errors/invalid-username.error'
+import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
+import { Username } from './value-objects/username'
 
 interface EditCookUseCaseRequest {
   cookId: string
@@ -14,7 +15,7 @@ interface EditCookUseCaseRequest {
 }
 
 type EditCookUseCaseResponse = Either<
-  ResourceNotFoundError | UsernameAlreadyTakenError,
+  ResourceNotFoundError | InvalidUsernameError | UsernameAlreadyTakenError,
   {
     cook: Cook
   }

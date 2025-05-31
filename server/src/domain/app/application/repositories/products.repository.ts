@@ -1,5 +1,6 @@
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { Product } from '../../enterprise/entities/product'
+import { ProductWithCategory } from '../use-cases/value-objects/product-with-category'
 
 export interface FindManyProductsFilters {
   name?: string
@@ -12,6 +13,10 @@ export interface ProductsRepository {
     filters: FindManyProductsFilters,
     params: PaginationParams
   ): Promise<Product[]>
+  findManyWithCategory(
+    filters: FindManyProductsFilters,
+    params: PaginationParams
+  ): Promise<ProductWithCategory[]>
   findManyByIds(productIds: string[]): Promise<Product[]>
   findById(id: string): Promise<Product | null>
   create(product: Product): Promise<void>

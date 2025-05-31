@@ -5,6 +5,7 @@ import {
 } from '@/domain/app/application/repositories/products.repository'
 import { Product } from '@/domain/app/enterprise/entities/product'
 import { prisma } from '..'
+import { PrismaProductWithCategoryMapper } from '../mappers/prisma-product-with-category.mapper'
 import { PrismaProductMapper } from '../mappers/prisma-product.mapper'
 
 export class PrismaProductsRepository implements ProductsRepository {
@@ -26,6 +27,29 @@ export class PrismaProductsRepository implements ProductsRepository {
     })
 
     return products.map(PrismaProductMapper.toDomain)
+  }
+
+  async findManyWithCategory(
+    { name, available, categoryId }: FindManyProductsFilters,
+    { page }: PaginationParams
+  ) {
+    const products = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive'
+        },
+        available,
+        categoryId
+      },
+      include: {
+        category: true
+      },
+      skip: (page - 1) * 20,
+      take: 20
+    })
+
+    return products.map(PrismaProductWithCategoryMapper.toDomain)
   }
 
   async findManyByIds(productIds: string[]) {

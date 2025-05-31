@@ -1,9 +1,10 @@
 import { FastifyInstance } from 'fastify'
-import { verifyJWT } from '../middlewares/jwt-verify'
-import { ensurePermissions } from '../middlewares/ensure-permissions'
+import { fetchProducts } from '../controllers/fetch-products'
 import { registerEmployee } from '../controllers/register-employee'
 import { registerProduct } from '../controllers/register-product'
 import { toggleProductAvailability } from '../controllers/toggle-product-availability'
+import { ensurePermissions } from '../middlewares/ensure-permissions'
+import { verifyJWT } from '../middlewares/jwt-verify'
 
 export async function protectedRoutes(app: FastifyInstance) {
   app.addHook('preHandler', verifyJWT)
@@ -25,6 +26,17 @@ export async function protectedRoutes(app: FastifyInstance) {
       ]
     },
     registerProduct
+  )
+  app.get(
+    '/products',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['list_products']
+        })
+      ]
+    },
+    fetchProducts
   )
   app.put(
     '/products/:productId',

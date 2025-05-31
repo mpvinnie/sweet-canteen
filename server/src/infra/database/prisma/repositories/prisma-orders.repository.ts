@@ -4,8 +4,8 @@ import {
   OrdersRepository
 } from '@/domain/app/application/repositories/orders.repository'
 import { Order } from '@/domain/app/enterprise/entities/order'
-import { prisma } from '..'
 import { $Enums } from 'generated/prisma'
+import { prisma } from '..'
 import { PrismaOrderMapper } from '../mappers/prisma-order.mapper'
 
 export class PrismaOrdersRepository implements OrdersRepository {

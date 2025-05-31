@@ -3,7 +3,7 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
 const toggleProductAvailabilityBodySchema = z.object({
-  productId: z.string()
+  productId: z.string().uuid()
 })
 
 export async function toggleProductAvailability(

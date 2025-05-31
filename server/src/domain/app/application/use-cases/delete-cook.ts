@@ -1,12 +1,12 @@
 import { Either, left, right } from '@/core/either'
-import { CooksRepository } from '../repositories/cooks.repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { CooksRepository } from '../repositories/cooks.repository'
 
 interface DeleteCookUseCaseRequest {
   cookId: string
 }
 
-type DeleteCookUseCaseResponse = Either<ResourceNotFoundError, {}>
+type DeleteCookUseCaseResponse = Either<ResourceNotFoundError, null>
 
 export class DeleteCookUseCase {
   constructor(private cooksRepository: CooksRepository) {}
@@ -22,6 +22,6 @@ export class DeleteCookUseCase {
 
     await this.cooksRepository.delete(cook)
 
-    return right({})
+    return right(null)
   }
 }

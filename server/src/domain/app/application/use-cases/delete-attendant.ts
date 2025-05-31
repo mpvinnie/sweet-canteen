@@ -1,12 +1,12 @@
 import { Either, left, right } from '@/core/either'
-import { AttendantsRepository } from '../repositories/attendants.repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { AttendantsRepository } from '../repositories/attendants.repository'
 
 interface DeleteAttendantUseCaseRequest {
   attendantId: string
 }
 
-type DeleteAttendantUseCaseResponse = Either<ResourceNotFoundError, {}>
+type DeleteAttendantUseCaseResponse = Either<ResourceNotFoundError, null>
 
 export class DeleteAttendantUseCase {
   constructor(private attendantsRepository: AttendantsRepository) {}
@@ -22,6 +22,6 @@ export class DeleteAttendantUseCase {
 
     await this.attendantsRepository.delete(attendant)
 
-    return right({})
+    return right(null)
   }
 }

@@ -3,11 +3,15 @@ import {
   FindManyProductsFilters,
   ProductsRepository
 } from '@/domain/app/application/repositories/products.repository'
+import { ProductWithCategory } from '@/domain/app/application/use-cases/value-objects/product-with-category'
 
 import { Product } from '@/domain/app/enterprise/entities/product'
+import { InMemoryCategoriesRepository } from './in-memory-categories.repository'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public items: Product[] = []
+
+  constructor(private categoriesRepository: InMemoryCategoriesRepository) {}
 
   async findMany(
     { name, available, categoryId }: FindManyProductsFilters,
@@ -31,6 +35,56 @@ export class InMemoryProductsRepository implements ProductsRepository {
       })
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
+
+    return filteredProducts
+  }
+
+  async findManyWithCategory(
+    { name, available, categoryId }: FindManyProductsFilters,
+    { page }: PaginationParams
+  ) {
+    const filteredProducts = this.items
+      .filter(product => {
+        if (name && !product.name.toLowerCase().includes(name.toLowerCase())) {
+          return false
+        }
+
+        if (typeof available === 'boolean' && product.available !== available) {
+          return false
+        }
+
+        if (categoryId && product.categoryId.toValue() !== categoryId) {
+          return false
+        }
+
+        return true
+      })
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+      .map(product => {
+        const category = this.categoriesRepository.items.find(category =>
+          category.id.equals(product.categoryId)
+        )
+
+        if (!category) {
+          throw new Error(
+            `Category with ID "${product.categoryId.toString()}" does not exist.`
+          )
+        }
+
+        return ProductWithCategory.create({
+          productId: product.id,
+          name: product.name,
+          description: product.description,
+          priceInCents: product.priceInCents,
+          availableQuantity: product.availableQuantity,
+          categoryId: product.categoryId,
+          category: category.name,
+          available: product.available,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt
+        })
+      })
 
     return filteredProducts
   }
