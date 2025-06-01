@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { editProduct } from '../controllers/edit-product'
 import { fetchProducts } from '../controllers/fetch-products'
 import { getProductById } from '../controllers/get-product-by-id'
 import { registerProduct } from '../controllers/register-product'
@@ -49,5 +50,16 @@ export async function productsRoutes(app: FastifyInstance) {
       ]
     },
     toggleProductAvailability
+  )
+  app.patch(
+    '/products/:productId',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['edit_product']
+        })
+      ]
+    },
+    editProduct
   )
 }

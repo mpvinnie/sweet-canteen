@@ -1,4 +1,5 @@
 import { Permission } from '@/core/types/permission'
+import { RolePermissions } from '@/core/types/role'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 interface EnsurePermissionsOptions {
@@ -13,8 +14,10 @@ export function ensurePermissions({ permissions }: EnsurePermissionsOptions) {
       return reply.status(401).send({ message: 'Unauthorized.' })
     }
 
+    const allowedPermissions = RolePermissions[user.role]
+
     const hasAllPermissions = permissions.every(permission =>
-      user.permissions.includes(permission)
+      allowedPermissions.includes(permission)
     )
 
     if (!hasAllPermissions) {

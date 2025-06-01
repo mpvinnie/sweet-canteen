@@ -110,6 +110,20 @@ export class PrismaProductsRepository implements ProductsRepository {
     })
   }
 
+  async saveWithCategory(product: Product) {
+    const productWithCategory = await prisma.product.update({
+      where: {
+        id: product.id.toString()
+      },
+      data: PrismaProductMapper.toPrisma(product),
+      include: {
+        category: true
+      }
+    })
+
+    return PrismaProductWithCategoryMapper.toDomain(productWithCategory)
+  }
+
   async delete(product: Product) {
     await prisma.product.delete({
       where: {

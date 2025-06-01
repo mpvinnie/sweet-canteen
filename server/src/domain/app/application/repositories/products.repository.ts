@@ -22,5 +22,6 @@ export interface ProductsRepository {
   findByIdWithCategory(id: string): Promise<ProductWithCategory | null>
   create(product: Product): Promise<void>
   save(product: Product): Promise<void>
+  saveWithCategory(product: Product): Promise<ProductWithCategory>
   delete(product: Product): Promise<void>
 }

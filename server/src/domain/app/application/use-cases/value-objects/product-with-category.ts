@@ -19,6 +19,10 @@ export class ProductWithCategory extends ValueObject<ProductWithCategoryProps> {
     return new ProductWithCategory(props)
   }
 
+  private touch() {
+    this.props.updatedAt = new Date()
+  }
+
   get productId() {
     return this.props.productId
   }
@@ -27,28 +31,56 @@ export class ProductWithCategory extends ValueObject<ProductWithCategoryProps> {
     return this.props.name
   }
 
+  set name(name: string) {
+    this.props.name = name
+  }
+
   get description() {
     return this.props.description
+  }
+
+  set description(description: string) {
+    this.props.description = description
   }
 
   get priceInCents() {
     return this.props.priceInCents
   }
 
+  set priceInCents(priceInCents: number) {
+    this.props.priceInCents = priceInCents
+  }
+
   get availableQuantity() {
     return this.props.availableQuantity
+  }
+
+  set availableQuantity(availableQuantity: number) {
+    this.props.availableQuantity = availableQuantity
   }
 
   get categoryId() {
     return this.props.categoryId
   }
 
+  set categoryId(categoryId: UniqueEntityID) {
+    this.props.categoryId = categoryId
+  }
+
   get category() {
     return this.props.category
   }
 
+  set category(category: string) {
+    this.props.category = category
+  }
+
   get available() {
     return this.props.available
+  }
+
+  set available(available: boolean) {
+    this.props.available = available
   }
 
   get createdAt() {
@@ -57,5 +89,9 @@ export class ProductWithCategory extends ValueObject<ProductWithCategoryProps> {
 
   get updatedAt() {
     return this.props.updatedAt
+  }
+
+  set updatedAt(updatedAt: Date | undefined) {
+    this.props.updatedAt = updatedAt
   }
 }

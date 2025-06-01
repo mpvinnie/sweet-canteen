@@ -148,6 +148,35 @@ export class InMemoryProductsRepository implements ProductsRepository {
     this.items[productIndex] = product
   }
 
+  async saveWithCategory(product: Product) {
+    const productIndex = this.items.findIndex(item => item.id === product.id)
+
+    this.items[productIndex] = product
+
+    const category = this.categoriesRepository.items.find(category =>
+      category.id.equals(product.categoryId)
+    )
+
+    if (!category) {
+      throw new Error(
+        `Category with ID "${product.categoryId.toString()}" does not exist.`
+      )
+    }
+
+    return ProductWithCategory.create({
+      productId: product.id,
+      name: product.name,
+      description: product.description,
+      priceInCents: product.priceInCents,
+      availableQuantity: product.availableQuantity,
+      categoryId: product.categoryId,
+      category: category.name,
+      available: product.available,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt
+    })
+  }
+
   async delete(product: Product) {
     const productIndex = this.items.findIndex(item => item.id === product.id)
 

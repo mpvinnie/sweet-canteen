@@ -1,9 +1,9 @@
 import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 import { Category } from '../../enterprise/entities/category'
-import { Product } from '../../enterprise/entities/product'
 import { CategoriesRepository } from '../repositories/categories.repository'
 import { ProductsRepository } from '../repositories/products.repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { ProductWithCategory } from './value-objects/product-with-category'
 
 interface EditProductUseCaseRequest {
   productId: string
@@ -18,7 +18,7 @@ interface EditProductUseCaseRequest {
 type EditProductUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    product: Product
+    product: ProductWithCategory
   }
 >
 
@@ -63,10 +63,11 @@ export class EditProductUseCase {
     product.availableQuantity = availableQuantity
     product.categoryId = categoryId
 
-    await this.productsRepository.save(product)
+    const productWithCategory =
+      await this.productsRepository.saveWithCategory(product)
 
     return right({
-      product
+      product: productWithCategory
     })
   }
 }

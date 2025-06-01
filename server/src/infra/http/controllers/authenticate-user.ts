@@ -1,4 +1,3 @@
-import { RolePermissions } from '@/core/types/role'
 import { makeAuthenticateUserUseCase } from '@/infra/factories/make-authenticate-user'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
@@ -34,12 +33,9 @@ export async function authenticateUser(
 
   const { payload } = result.value
 
-  const permissions = RolePermissions[payload.role]
-
   const token = await reply.jwtSign(
     {
-      role: payload.role,
-      permissions
+      role: payload.role
     },
     {
       sign: {

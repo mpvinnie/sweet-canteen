@@ -36,11 +36,16 @@ describe('Edit product', () => {
         description: 'Description 01',
         priceInCents: 10,
         availableQuantity: 10,
-        available: true
+        available: true,
+        category: 'Lanche'
       })
     })
-    expect(result.value).toMatchObject({
-      product: productsRepository.items[0]
+    expect(productsRepository.items[0]).toMatchObject({
+      name: 'Product 01',
+      description: 'Description 01',
+      priceInCents: 10,
+      availableQuantity: 10,
+      available: true
     })
     expect(categoriesRepository.items[0].name).toEqual('Lanche')
   })
