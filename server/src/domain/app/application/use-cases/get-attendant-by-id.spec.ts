@@ -1,23 +1,23 @@
-import { InMemoryAttendantsRepository } from 'test/repositories/in-memory-attendants.repository'
-import { GetAttendantByUsernameUseCase } from './get-attendant-by-username'
-import { makeAttendant } from 'test/factories/make-attendant'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { makeAttendant } from 'test/factories/make-attendant'
+import { InMemoryAttendantsRepository } from 'test/repositories/in-memory-attendants.repository'
+import { GetAttendantByIdUseCase } from './get-attendant-by-id'
 
 let attendantsRepository: InMemoryAttendantsRepository
-let sut: GetAttendantByUsernameUseCase
+let sut: GetAttendantByIdUseCase
 
-describe('Get attendant by username', () => {
+describe('Get attendant by id', () => {
   beforeEach(() => {
     attendantsRepository = new InMemoryAttendantsRepository()
-    sut = new GetAttendantByUsernameUseCase(attendantsRepository)
+    sut = new GetAttendantByIdUseCase(attendantsRepository)
   })
 
-  it('should be able to get an attendant by his username', async () => {
+  it('should be able to get an attendant by his id', async () => {
     const attendant = makeAttendant()
     attendantsRepository.create(attendant)
 
     const result = await sut.execute({
-      username: attendant.username.value
+      id: attendant.id.toString()
     })
 
     expect(result.isRight()).toBe(true)
@@ -28,7 +28,7 @@ describe('Get attendant by username', () => {
 
   it('should not be able to get a non-existing attendant', async () => {
     const result = await sut.execute({
-      username: 'non-existing-attendant-username'
+      id: 'non-existing-attendant-id'
     })
 
     expect(result.isLeft()).toBe(true)

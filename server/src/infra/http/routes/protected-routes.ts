@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { fetchProducts } from '../controllers/fetch-products'
+import { getEmployeeById } from '../controllers/get-employee-profile'
 import { getProductById } from '../controllers/get-product-by-id'
 import { registerEmployee } from '../controllers/register-employee'
 import { registerProduct } from '../controllers/register-product'
@@ -17,6 +18,7 @@ export async function protectedRoutes(app: FastifyInstance) {
     },
     registerEmployee
   )
+  app.get('/employees', getEmployeeById)
   app.post(
     '/products',
     {

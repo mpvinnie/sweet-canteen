@@ -69,7 +69,7 @@ RN023: Administradores têm permissão total: gerenciar usuários e o menu.
 ## Atendentes
 
 - [x] Deve ser possível cadastrar um atendente
-- [ ] Deve ser possível buscar um atendente pelo username
+- [x] Deve ser possível buscar os dados de um atendente pelo id
 - [ ] Deve ser possível listar os atendentes
 - [ ] Deve ser possível editar um atendente
 - [ ] Deve ser possível deletar um atendente
@@ -77,7 +77,7 @@ RN023: Administradores têm permissão total: gerenciar usuários e o menu.
 ## Cozinheiros
 
 - [x] Deve ser possível cadastrar um cozinheiro
-- [ ] Deve ser possível buscar um cozinheiro pelo username
+- [x] Deve ser possível buscar os dados de um cozinheiro pelo id
 - [ ] Deve ser possível listar os cozinheiros
 - [ ] Deve ser possível editar um cozinheiro
 - [ ] Deve ser possível deletar um cozinheiro
@@ -86,7 +86,7 @@ RN023: Administradores têm permissão total: gerenciar usuários e o menu.
 
 - [x] Deve ser possível cadastrar um produto
 - [x] Deve ser possível listar os produtos com filtro
-- [ ] Deve ser possível buscar um produto pelo seu ID
+- [x] Deve ser possível buscar um produto pelo seu ID
 - [x] Deve ser possível trocar a disponibilidade de um produto
 - [ ] Deve ser possível editar um produto
 - [ ] Deve ser possível deletar um produto

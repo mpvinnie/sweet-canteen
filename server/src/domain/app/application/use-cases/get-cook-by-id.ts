@@ -1,26 +1,26 @@
 import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 import { Cook } from '../../enterprise/entities/cook'
 import { CooksRepository } from '../repositories/cooks.repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 
-interface GetCookByUsernameUseCaseRequest {
-  username: string
+interface GetCookByIdUseCaseRequest {
+  id: string
 }
 
-type GetCookByUsernameUseCaseResponse = Either<
+type GetCookByIdUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     cook: Cook
   }
 >
 
-export class GetCookByUsernameUseCase {
+export class GetCookByIdUseCase {
   constructor(private cooksRepository: CooksRepository) {}
 
   async execute({
-    username
-  }: GetCookByUsernameUseCaseRequest): Promise<GetCookByUsernameUseCaseResponse> {
-    const cook = await this.cooksRepository.findByUsername(username)
+    id
+  }: GetCookByIdUseCaseRequest): Promise<GetCookByIdUseCaseResponse> {
+    const cook = await this.cooksRepository.findById(id)
 
     if (!cook) {
       return left(new ResourceNotFoundError())

@@ -1,26 +1,26 @@
 import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 import { Attendant } from '../../enterprise/entities/attendant'
 import { AttendantsRepository } from '../repositories/attendants.repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 
-interface GetAttendantByUsernameUseCaseRequest {
-  username: string
+interface GetAttendantByIdUseCaseRequest {
+  id: string
 }
 
-type GetAttendantByUsernameUseCaseResponse = Either<
+type GetAttendantByIdUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     attendant: Attendant
   }
 >
 
-export class GetAttendantByUsernameUseCase {
+export class GetAttendantByIdUseCase {
   constructor(private attendantsRepository: AttendantsRepository) {}
 
   async execute({
-    username
-  }: GetAttendantByUsernameUseCaseRequest): Promise<GetAttendantByUsernameUseCaseResponse> {
-    const attendant = await this.attendantsRepository.findByUsername(username)
+    id
+  }: GetAttendantByIdUseCaseRequest): Promise<GetAttendantByIdUseCaseResponse> {
+    const attendant = await this.attendantsRepository.findById(id)
 
     if (!attendant) {
       return left(new ResourceNotFoundError())
