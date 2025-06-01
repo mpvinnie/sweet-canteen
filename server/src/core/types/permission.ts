@@ -4,6 +4,7 @@ export type Permission =
   | 'register_product'
   | 'edit_product'
   | 'delete_product'
+  | 'delete_employee'
   | 'list_products'
   | 'register_order'
   | 'list_orders'

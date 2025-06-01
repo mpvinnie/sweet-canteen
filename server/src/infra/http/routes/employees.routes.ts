@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { deleteEmployee } from '../controllers/delete-employee'
 import { fetchEmployees } from '../controllers/fetch-employees'
 import { getEmployeeById } from '../controllers/get-employee-profile'
 import { registerEmployee } from '../controllers/register-employee'
@@ -20,4 +21,11 @@ export async function employeesRoutes(app: FastifyInstance) {
     fetchEmployees
   )
   app.get('/employees/me', getEmployeeById)
+  app.delete(
+    '/employees/:id',
+    {
+      preHandler: [ensurePermissions({ permissions: ['delete_employee'] })]
+    },
+    deleteEmployee
+  )
 }

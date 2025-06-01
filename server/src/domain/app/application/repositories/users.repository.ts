@@ -13,4 +13,5 @@ export interface UsersRepository {
     params: PaginationParams
   ): Promise<User[]>
   create(user: User): Promise<void>
+  delete(user: User): Promise<void>
 }
