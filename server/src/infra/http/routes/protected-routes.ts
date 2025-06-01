@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { fetchEmployees } from '../controllers/fetch-employees'
 import { fetchProducts } from '../controllers/fetch-products'
 import { getEmployeeById } from '../controllers/get-employee-profile'
 import { getProductById } from '../controllers/get-product-by-id'
@@ -18,7 +19,14 @@ export async function protectedRoutes(app: FastifyInstance) {
     },
     registerEmployee
   )
-  app.get('/employees', getEmployeeById)
+  app.get(
+    '/employees',
+    {
+      preHandler: [ensurePermissions({ permissions: ['list_employees'] })]
+    },
+    fetchEmployees
+  )
+  app.get('/employees/me', getEmployeeById)
   app.post(
     '/products',
     {

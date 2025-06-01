@@ -1,4 +1,8 @@
-import { UsersRepository } from '@/domain/app/application/repositories/users.repository'
+import { PaginationParams } from '@/core/repositories/pagination-params'
+import {
+  FindManyEmployeesFilters,
+  UsersRepository
+} from '@/domain/app/application/repositories/users.repository'
 import { User } from '@/domain/app/enterprise/entities/user'
 import { prisma } from '..'
 import { PrismaUserMapper } from '../mappers/prisma-user.mapper'
@@ -30,6 +34,26 @@ export class PrismaUsersRepository implements UsersRepository {
     }
 
     return PrismaUserMapper.toDomain(user)
+  }
+
+  async findManyEmployees(
+    { name }: FindManyEmployeesFilters,
+    { page }: PaginationParams
+  ) {
+    const employees = await prisma.user.findMany({
+      where: {
+        role: {
+          not: 'ADMIN'
+        },
+        name: {
+          contains: name
+        }
+      },
+      skip: (page - 1) * 20,
+      take: 20
+    })
+
+    return employees.map(PrismaUserMapper.toDomain)
   }
 
   async create(user: User) {
