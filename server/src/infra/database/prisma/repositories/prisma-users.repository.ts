@@ -69,4 +69,13 @@ export class PrismaUsersRepository implements UsersRepository {
       }
     })
   }
+
+  async save(user: User) {
+    await prisma.user.update({
+      where: {
+        id: user.id.toString()
+      },
+      data: PrismaUserMapper.toPrisma(user)
+    })
+  }
 }

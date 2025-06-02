@@ -59,4 +59,10 @@ export class InMemoryUsersRepository implements UsersRepository {
 
     this.items.splice(userIndex, 1)
   }
+
+  async save(user: User): Promise<void> {
+    const userIndex = this.items.findIndex(item => item.id.equals(user.id))
+
+    this.items[userIndex] = user
+  }
 }

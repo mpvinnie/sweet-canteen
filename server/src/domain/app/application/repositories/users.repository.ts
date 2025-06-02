@@ -14,4 +14,5 @@ export interface UsersRepository {
   ): Promise<User[]>
   create(user: User): Promise<void>
   delete(user: User): Promise<void>
+  save(user: User): Promise<void>
 }

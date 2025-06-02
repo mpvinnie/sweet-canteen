@@ -3,6 +3,7 @@ export type Permission =
   | 'list_employees'
   | 'register_product'
   | 'edit_product'
+  | 'edit_employee'
   | 'delete_product'
   | 'delete_employee'
   | 'list_products'

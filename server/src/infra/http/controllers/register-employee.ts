@@ -13,7 +13,7 @@ const registerEmployeeBodySchema = z.object({
       message:
         'Username must contain only letters, numbers, underscores, dots or dashes'
     }),
-  password: z.string(),
+  password: z.string().min(6),
   role: z.enum(['attendant', 'cook'])
 })
 

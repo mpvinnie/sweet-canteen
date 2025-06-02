@@ -1,41 +1,44 @@
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
-import { Attendant } from '../../enterprise/entities/attendant'
+import { Role } from '@/core/types/role'
+import { User } from '../../enterprise/entities/user'
 import { HashProvider } from '../providers/hash.provider'
-import { AttendantsRepository } from '../repositories/attendants.repository'
+import { UsersRepository } from '../repositories/users.repository'
 import { InvalidUsernameError } from './errors/invalid-username.error'
 import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
 import { Username } from './value-objects/username'
 
-interface EditAttendantUseCaseRequest {
-  attendantId: string
-  name: string
+interface EditEmployeeUseCaseRequest {
+  employeeId: string
+  name?: string
+  role?: Role
   username?: string
   password?: string
 }
 
-type EditAttendantUseCaseResponse = Either<
+type EditEmployeeUseCaseResponse = Either<
   ResourceNotFoundError | InvalidUsernameError | UsernameAlreadyTakenError,
   {
-    attendant: Attendant
+    employee: User
   }
 >
 
-export class EditAttendantUseCase {
+export class EditEmployeeUseCase {
   constructor(
-    private attendantsRepository: AttendantsRepository,
+    private usersRepository: UsersRepository,
     private hashProvider: HashProvider
   ) {}
 
   async execute({
-    attendantId,
+    employeeId,
     name,
+    role,
     username,
     password
-  }: EditAttendantUseCaseRequest): Promise<EditAttendantUseCaseResponse> {
-    const attendant = await this.attendantsRepository.findById(attendantId)
+  }: EditEmployeeUseCaseRequest): Promise<EditEmployeeUseCaseResponse> {
+    const employee = await this.usersRepository.findById(employeeId)
 
-    if (!attendant) {
+    if (!employee) {
       return left(new ResourceNotFoundError())
     }
 
@@ -46,28 +49,29 @@ export class EditAttendantUseCase {
         return left(newUsername.value)
       }
 
-      const existingAttendant =
-        await this.attendantsRepository.findByUsername(username)
+      const existingEmployee =
+        await this.usersRepository.findByUsername(username)
 
-      if (existingAttendant) {
+      if (existingEmployee) {
         return left(new UsernameAlreadyTakenError())
       }
 
-      attendant.username = newUsername.value
+      employee.username = newUsername.value
     }
 
     if (password) {
       const passwordHash = await this.hashProvider.hash(password)
 
-      attendant.passwordHash = passwordHash
+      employee.passwordHash = passwordHash
     }
 
-    attendant.name = name
+    employee.name = name ?? employee.name
+    employee.role = role ?? employee.role
 
-    await this.attendantsRepository.save(attendant)
+    await this.usersRepository.save(employee)
 
     return right({
-      attendant
+      employee
     })
   }
 }
