@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { deleteProduct } from '../controllers/delete-product'
 import { editProduct } from '../controllers/edit-product'
 import { fetchProducts } from '../controllers/fetch-products'
 import { getProductById } from '../controllers/get-product-by-id'
@@ -61,5 +62,16 @@ export async function productsRoutes(app: FastifyInstance) {
       ]
     },
     editProduct
+  )
+  app.delete(
+    '/products/:productId',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['delete_product']
+        })
+      ]
+    },
+    deleteProduct
   )
 }
