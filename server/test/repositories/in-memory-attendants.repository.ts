@@ -40,7 +40,7 @@ export class InMemoryAttendantsRepository implements AttendantsRepository {
       .filter(attendant => {
         if (
           name &&
-          !attendant.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
+          !attendant.name.toLowerCase().includes(name.toLowerCase())
         ) {
           return false
         }

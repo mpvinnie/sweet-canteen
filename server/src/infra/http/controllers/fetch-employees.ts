@@ -1,7 +1,7 @@
 import { makeFetchEmployees } from '@/infra/factories/make-fetch-employees'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { EmployeePresenter } from '../presenters/employee.presenter'
+import { UserPresenter } from '../presenters/user.presenter'
 
 const fetchEmployeesQuerySchema = z.object({
   name: z.string().optional(),
@@ -28,6 +28,6 @@ export async function fetchEmployees(
   const { employees } = result.value
 
   return reply.status(200).send({
-    employees: employees.map(EmployeePresenter.toHTTP)
+    employees: employees.map(UserPresenter.toHTTP)
   })
 }

@@ -1,34 +1,33 @@
-import { makeAdmin } from 'test/factories/make-admin'
-import { makeAttendant } from 'test/factories/make-attendant'
-import { makeCook } from 'test/factories/make-cook'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users.repository'
+import { makeEmployee } from 'test/factories/make-employee'
+import { InMemoryEmployeesRepository } from 'test/repositories/in-memory-employees.repository'
 import { FetchEmployeesUseCase } from './fetch-employees'
 
-let usersRepository: InMemoryUsersRepository
+let employeesRepository: InMemoryEmployeesRepository
 let sut: FetchEmployeesUseCase
 
 describe('Fetch employees', () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository()
-    sut = new FetchEmployeesUseCase(usersRepository)
+    employeesRepository = new InMemoryEmployeesRepository()
+    sut = new FetchEmployeesUseCase(employeesRepository)
   })
 
   it('should be able to fetch filtered employees', async () => {
-    const admin = makeAdmin()
-    const attendant = makeAttendant({
-      name: 'Employee 01'
+    const attendant = makeEmployee({
+      name: 'Employee 01',
+      role: 'attendant'
     })
-    const cook01 = makeCook({
-      name: 'Employee 02'
+    const cook01 = makeEmployee({
+      name: 'Employee 02',
+      role: 'cook'
     })
-    const cook02 = makeCook({
-      name: 'Cook'
+    const cook02 = makeEmployee({
+      name: 'Cook',
+      role: 'cook'
     })
 
-    await usersRepository.create(admin)
-    await usersRepository.create(attendant)
-    await usersRepository.create(cook01)
-    await usersRepository.create(cook02)
+    employeesRepository.items.push(attendant)
+    employeesRepository.items.push(cook01)
+    employeesRepository.items.push(cook02)
 
     const result = await sut.execute({
       name: 'Employee',
@@ -42,9 +41,9 @@ describe('Fetch employees', () => {
     )
   })
 
-  it('should be able to fetch paginated users', async () => {
+  it('should be able to fetch paginated employees', async () => {
     for (let i = 1; i <= 22; i++) {
-      await usersRepository.create(makeAttendant())
+      employeesRepository.items.push(makeEmployee())
     }
 
     const result = await sut.execute({

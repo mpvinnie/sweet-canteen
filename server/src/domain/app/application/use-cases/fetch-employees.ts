@@ -1,6 +1,6 @@
 import { Either, right } from '@/core/either'
-import { User } from '../../enterprise/entities/user'
-import { UsersRepository } from '../repositories/users.repository'
+import { Employee } from '../../enterprise/entities/employee'
+import { EmployeesRepository } from '../repositories/employees.repository'
 
 interface FetchEmployeesUseCaseRequest {
   name?: string
@@ -10,18 +10,18 @@ interface FetchEmployeesUseCaseRequest {
 type FetchEmployeesUseCaseResponse = Either<
   null,
   {
-    employees: User[]
+    employees: Employee[]
   }
 >
 
 export class FetchEmployeesUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private employeesRepository: EmployeesRepository) {}
 
   async execute({
     name,
     page
   }: FetchEmployeesUseCaseRequest): Promise<FetchEmployeesUseCaseResponse> {
-    const employees = await this.usersRepository.findManyEmployees(
+    const employees = await this.employeesRepository.findMany(
       { name },
       { page }
     )

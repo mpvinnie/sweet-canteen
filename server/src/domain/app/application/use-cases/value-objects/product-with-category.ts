@@ -19,10 +19,6 @@ export class ProductWithCategory extends ValueObject<ProductWithCategoryProps> {
     return new ProductWithCategory(props)
   }
 
-  private touch() {
-    this.props.updatedAt = new Date()
-  }
-
   get productId() {
     return this.props.productId
   }

@@ -1,28 +1,28 @@
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
-import { makeAttendant } from 'test/factories/make-attendant'
+import { makeEmployee } from 'test/factories/make-employee'
 import { FakeHashProvider } from 'test/providers/fake-hash.provider'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users.repository'
+import { InMemoryEmployeesRepository } from 'test/repositories/in-memory-employees.repository'
 import { EditEmployeeUseCase } from './edit-employee'
 import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
 import { Username } from './value-objects/username'
 
-let usersRepository: InMemoryUsersRepository
+let employeesRepository: InMemoryEmployeesRepository
 let hashProvider: FakeHashProvider
 let sut: EditEmployeeUseCase
 
 describe('Edit employee', () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository()
+    employeesRepository = new InMemoryEmployeesRepository()
     hashProvider = new FakeHashProvider()
-    sut = new EditEmployeeUseCase(usersRepository, hashProvider)
+    sut = new EditEmployeeUseCase(employeesRepository, hashProvider)
   })
 
   it('should be able to edit an employee', async () => {
-    const attendant = makeAttendant()
-    await usersRepository.create(attendant)
+    const employee = makeEmployee()
+    employeesRepository.items.push(employee)
 
     const result = await sut.execute({
-      employeeId: attendant.id.toString(),
+      employeeId: employee.id.toString(),
       name: 'New Employee Name',
       role: 'cook',
       username: 'cook_username',
@@ -39,7 +39,7 @@ describe('Edit employee', () => {
     })
 
     expect(result.value).toMatchObject({
-      employee: usersRepository.items[0]
+      employee: employeesRepository.items[0]
     })
   })
 
@@ -56,16 +56,16 @@ describe('Edit employee', () => {
   })
 
   it('should not be able to edit an employee username to an existing one', async () => {
-    const attendant01 = makeAttendant()
-    const attendant02 = makeAttendant()
+    const employee01 = makeEmployee()
+    const employee02 = makeEmployee()
 
-    await usersRepository.create(attendant01)
-    await usersRepository.create(attendant02)
+    employeesRepository.items.push(employee01)
+    employeesRepository.items.push(employee02)
 
     const result = await sut.execute({
-      employeeId: attendant01.id.toString(),
+      employeeId: employee01.id.toString(),
       name: 'New Employee Name',
-      username: attendant02.username.value
+      username: employee02.username.value
     })
 
     expect(result.isLeft()).toBe(true)

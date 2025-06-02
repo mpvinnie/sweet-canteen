@@ -1,7 +1,7 @@
 import { makeEditEmployeeUseCase } from '@/infra/factories/make-edit-employee'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { EmployeePresenter } from '../presenters/employee.presenter'
+import { UserPresenter } from '../presenters/user.presenter'
 
 const editEmployeeParamsSchema = z.object({
   employeeId: z.string().uuid()
@@ -57,6 +57,6 @@ export async function editEmployee(
   }
 
   return reply.status(200).send({
-    employee: EmployeePresenter.toHTTP(result.value.employee)
+    employee: UserPresenter.toHTTP(result.value.employee)
   })
 }

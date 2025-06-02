@@ -1,9 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
-import { Role } from '@/core/types/role'
-import { User } from '../../enterprise/entities/user'
+import { Employee, EmployeeRole } from '../../enterprise/entities/employee'
 import { HashProvider } from '../providers/hash.provider'
-import { UsersRepository } from '../repositories/users.repository'
+import { EmployeesRepository } from '../repositories/employees.repository'
 import { InvalidUsernameError } from './errors/invalid-username.error'
 import { UsernameAlreadyTakenError } from './errors/username-already-taken.error'
 import { Username } from './value-objects/username'
@@ -11,7 +10,7 @@ import { Username } from './value-objects/username'
 interface EditEmployeeUseCaseRequest {
   employeeId: string
   name?: string
-  role?: Role
+  role?: EmployeeRole
   username?: string
   password?: string
 }
@@ -19,13 +18,13 @@ interface EditEmployeeUseCaseRequest {
 type EditEmployeeUseCaseResponse = Either<
   ResourceNotFoundError | InvalidUsernameError | UsernameAlreadyTakenError,
   {
-    employee: User
+    employee: Employee
   }
 >
 
 export class EditEmployeeUseCase {
   constructor(
-    private usersRepository: UsersRepository,
+    private employeesRepository: EmployeesRepository,
     private hashProvider: HashProvider
   ) {}
 
@@ -36,7 +35,7 @@ export class EditEmployeeUseCase {
     username,
     password
   }: EditEmployeeUseCaseRequest): Promise<EditEmployeeUseCaseResponse> {
-    const employee = await this.usersRepository.findById(employeeId)
+    const employee = await this.employeesRepository.findById(employeeId)
 
     if (!employee) {
       return left(new ResourceNotFoundError())
@@ -50,7 +49,7 @@ export class EditEmployeeUseCase {
       }
 
       const existingEmployee =
-        await this.usersRepository.findByUsername(username)
+        await this.employeesRepository.findByUsername(username)
 
       if (existingEmployee) {
         return left(new UsernameAlreadyTakenError())
@@ -66,9 +65,9 @@ export class EditEmployeeUseCase {
     }
 
     employee.name = name ?? employee.name
-    employee.role = role ?? employee.role
+    employee.updateRole(role ?? employee.role)
 
-    await this.usersRepository.save(employee)
+    await this.employeesRepository.save(employee)
 
     return right({
       employee

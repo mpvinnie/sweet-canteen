@@ -1,5 +1,4 @@
-import { makeRegisterAttendantUseCase } from '@/infra/factories/make-register-attendant'
-import { makeRegisterCookUseCase } from '@/infra/factories/make-register-cook'
+import { makeRegisterEmployeeUseCase } from '@/infra/factories/make-register-employee'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -25,23 +24,13 @@ export async function registerEmployee(
     request.body
   )
 
-  let useCase
+  const registerEmployee = makeRegisterEmployeeUseCase()
 
-  switch (role) {
-    case 'attendant':
-      useCase = makeRegisterAttendantUseCase()
-      break
-    case 'cook':
-      useCase = makeRegisterCookUseCase()
-      break
-    default:
-      return reply.status(400).send({ message: 'Invalid role.' })
-  }
-
-  const result = await useCase.execute({
+  const result = await registerEmployee.execute({
     name,
     username,
-    password
+    password,
+    role
   })
 
   if (result.isLeft()) {

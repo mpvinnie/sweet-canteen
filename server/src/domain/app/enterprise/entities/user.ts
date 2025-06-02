@@ -40,10 +40,6 @@ export abstract class User extends Entity<UserProps> {
     return this.props.role
   }
 
-  set role(role: Role) {
-    this.props.role = role
-  }
-
   get permissions() {
     return RolePermissions[this.role]
   }
