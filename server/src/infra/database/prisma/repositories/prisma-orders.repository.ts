@@ -6,6 +6,7 @@ import {
 import { Order } from '@/domain/app/enterprise/entities/order'
 import { $Enums } from 'generated/prisma'
 import { prisma } from '..'
+import { PrismaOrderWithItemsMapper } from '../mappers/prisma-order-with-items.mapper'
 import { PrismaOrderMapper } from '../mappers/prisma-order.mapper'
 
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -49,7 +50,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
   async create(order: Order) {
     await prisma.order.create({
-      data: PrismaOrderMapper.toPrisma(order)
+      data: PrismaOrderWithItemsMapper.toPrisma(order)
     })
   }
 

@@ -7,6 +7,7 @@ import { InMemoryOrderItemsRepository } from 'test/repositories/in-memory-orderI
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products.repository'
 import { InsufficientStockError } from './errors/insufficient-stock.error'
+import { UnavailableProductError } from './errors/unavailable-product.error'
 import { RegisterOrderUseCase } from './register-order'
 
 let attendatsRepository: InMemoryAttendantsRepository
@@ -36,11 +37,13 @@ describe('Register order', () => {
 
     const product01 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 5
+      availableQuantity: 5,
+      available: true
     })
     const product02 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 3
+      availableQuantity: 3,
+      available: true
     })
     productsRepository.create(product01)
     productsRepository.create(product02)
@@ -76,11 +79,13 @@ describe('Register order', () => {
   it('should not be able to register an order to a non-existing attendant', async () => {
     const product01 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 5
+      availableQuantity: 5,
+      available: true
     })
     const product02 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 3
+      availableQuantity: 3,
+      available: true
     })
     productsRepository.create(product01)
     productsRepository.create(product02)
@@ -112,7 +117,8 @@ describe('Register order', () => {
 
     const product01 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 5
+      availableQuantity: 5,
+      available: true
     })
     productsRepository.create(product01)
 
@@ -136,17 +142,46 @@ describe('Register order', () => {
     expect(productsRepository.items[0].availableQuantity).toEqual(5)
   })
 
+  it('should not be able to register an order with unavailable product', async () => {
+    const attendant = makeAttendant()
+    attendatsRepository.items.push(attendant)
+
+    const product01 = makeProduct({
+      priceInCents: 1000,
+      availableQuantity: 5,
+      available: false
+    })
+
+    productsRepository.create(product01)
+
+    const result = await sut.execute({
+      attendantId: attendant.id.toString(),
+      customerName: 'Customer Name',
+      items: [
+        {
+          productId: product01.id.toString(),
+          quantity: 2
+        }
+      ]
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnavailableProductError)
+  })
+
   it('should not be able to register an order to a product with insufficient stock', async () => {
     const attendant = makeAttendant()
     attendatsRepository.items.push(attendant)
 
     const product01 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 5
+      availableQuantity: 5,
+      available: true
     })
     const product02 = makeProduct({
       priceInCents: 1000,
-      availableQuantity: 3
+      availableQuantity: 3,
+      available: true
     })
     productsRepository.create(product01)
     productsRepository.create(product02)

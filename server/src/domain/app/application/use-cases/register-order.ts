@@ -1,12 +1,13 @@
 import { Either, left, right } from '@/core/either'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 import { Order } from '../../enterprise/entities/order'
+import { OrderItem } from '../../enterprise/entities/orderItem'
 import { AttendantsRepository } from '../repositories/attendants.repository'
+import { OrdersRepository } from '../repositories/orders.repository'
 import { ProductsRepository } from '../repositories/products.repository'
 import { InsufficientStockError } from './errors/insufficient-stock.error'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { OrderItem } from '../../enterprise/entities/orderItem'
-import { OrdersRepository } from '../repositories/orders.repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { UnavailableProductError } from './errors/unavailable-product.error'
 
 interface RegisterOrderUseCaseRequest {
   attendantId: string
@@ -19,7 +20,7 @@ interface RegisterOrderUseCaseRequest {
 }
 
 type RegisterOrderUseCaseResponse = Either<
-  ResourceNotFoundError | InsufficientStockError,
+  ResourceNotFoundError | UnavailableProductError | InsufficientStockError,
   {
     order: Order
   }
@@ -56,6 +57,10 @@ export class RegisterOrderUseCase {
 
       if (!product) {
         return left(new ResourceNotFoundError())
+      }
+
+      if (!product.available) {
+        return left(new UnavailableProductError(product.name))
       }
 
       if (product.availableQuantity < item.quantity) {
