@@ -28,10 +28,39 @@ export class PrismaOrdersRepository implements OrdersRepository {
         }
       },
       skip: (page - 1) * 20,
-      take: 20
+      take: 20,
+      select: {
+        id: true,
+        attendantId: true,
+        customerName: true,
+        observation: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            orderItems: true
+          }
+        },
+        orderItems: {
+          select: {
+            quantity: true,
+            unitPriceInCents: true
+          }
+        }
+      }
     })
 
-    return orders.map(PrismaOrderMapper.toDomain)
+    return orders.map(raw => {
+      const totalInCents = raw.orderItems.reduce((total, item) => {
+        return total + item.quantity * item.unitPriceInCents
+      }, 0)
+
+      return PrismaOrderMapper.toDomain({
+        ...raw,
+        totalInCents
+      })
+    })
   }
 
   async findById(orderId: string) {

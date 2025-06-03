@@ -9,4 +9,5 @@ export type Permission =
   | 'list_products'
   | 'register_order'
   | 'list_orders'
+  | 'list_today_orders'
   | 'update_order_status'

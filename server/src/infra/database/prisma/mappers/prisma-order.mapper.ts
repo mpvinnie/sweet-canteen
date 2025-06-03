@@ -2,8 +2,15 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Order, OrderStatus } from '@/domain/app/enterprise/entities/order'
 import { $Enums, Prisma, Order as PrismaOrder } from 'generated/prisma'
 
+type PrismaOrderSummrary = PrismaOrder & {
+  _count?: {
+    orderItems: number
+  }
+  totalInCents?: number
+}
+
 export class PrismaOrderMapper {
-  static toDomain(raw: PrismaOrder): Order {
+  static toDomain(raw: PrismaOrderSummrary): Order {
     return Order.create(
       {
         attendantId: new UniqueEntityID(raw.attendantId),
@@ -12,7 +19,9 @@ export class PrismaOrderMapper {
         observation: raw.observation ?? undefined,
         status: raw.status.toLowerCase() as OrderStatus,
         createdAt: raw.createdAt,
-        updatedAt: raw.updatedAt ?? undefined
+        updatedAt: raw.updatedAt ?? undefined,
+        totalInCentsOverride: raw.totalInCents,
+        totalItemsOverride: raw._count?.orderItems
       },
       new UniqueEntityID(raw.id)
     )

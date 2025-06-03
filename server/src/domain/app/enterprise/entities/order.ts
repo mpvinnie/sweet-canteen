@@ -1,9 +1,9 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
-import { OrderItem } from './orderItem'
 import { OrderCreatedEvent } from '../events/order-created.event'
 import { OrderStatusUpdated } from '../events/order-status-updated.event'
+import { OrderItem } from './orderItem'
 
 export type OrderStatus =
   | 'pending'
@@ -21,6 +21,8 @@ export interface OrderProps {
   orderItems: OrderItem[]
   createdAt: Date
   updatedAt?: Date
+  totalInCentsOverride?: number
+  totalItemsOverride?: number
 }
 
 export class Order extends AggregateRoot<OrderProps> {
@@ -32,7 +34,9 @@ export class Order extends AggregateRoot<OrderProps> {
       {
         ...props,
         status: props.status ?? 'pending',
-        createdAt: props.createdAt ?? new Date()
+        createdAt: props.createdAt ?? new Date(),
+        totalInCentsOverride: props.totalInCentsOverride,
+        totalItemsOverride: props.totalItemsOverride
       },
       id
     )
@@ -86,13 +90,16 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
   get totalInCents() {
-    return this.props.orderItems.reduce((total, item) => {
-      return total + item.subtotalInCents
-    }, 0)
+    return (
+      this.props.totalInCentsOverride ??
+      this.props.orderItems.reduce((total, item) => {
+        return total + item.subtotalInCents
+      }, 0)
+    )
   }
 
   get totalItems() {
-    return this.props.orderItems.length
+    return this.props.totalItemsOverride ?? this.props.orderItems.length
   }
 
   get createdAt() {

@@ -14,6 +14,6 @@ export const RolePermissions: Record<Role, Permission[]> = {
     'list_products',
     'list_orders'
   ],
-  attendant: ['register_order', 'list_products', 'list_orders'],
-  cook: ['list_orders', 'update_order_status']
+  attendant: ['register_order', 'list_products', 'list_today_orders'],
+  cook: ['list_today_orders', 'update_order_status']
 }
