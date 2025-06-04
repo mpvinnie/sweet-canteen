@@ -104,6 +104,23 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return PrismaOrderMapper.toDomain(order)
   }
 
+  async findByIdWithItems(orderId: string) {
+    const order = await prisma.order.findUnique({
+      where: {
+        id: orderId
+      },
+      include: {
+        orderItems: true
+      }
+    })
+
+    if (!order) {
+      return null
+    }
+
+    return PrismaOrderWithItemsMapper.toDomain(order)
+  }
+
   async create(order: Order) {
     await prisma.order.create({
       data: PrismaOrderWithItemsMapper.toPrisma(order)

@@ -4,8 +4,11 @@ export class OrderItemPresenter {
   static toHTTP(orderItem: OrderItem) {
     return {
       id: orderItem.id.toString(),
+      productId: orderItem.productId.toString(),
       productName: orderItem.productName,
-      quantity: orderItem.quantity
+      quantity: orderItem.quantity,
+      unitPriceInCents: orderItem.unitPriceInCents,
+      subtotalInCents: orderItem.subtotalInCents
     }
   }
 }

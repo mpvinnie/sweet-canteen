@@ -100,6 +100,16 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
+  async findByIdWithItems(orderId: string) {
+    const order = this.items.find(order => order.id.toString() === orderId)
+
+    if (!order) {
+      return null
+    }
+
+    return order
+  }
+
   async delete(order: Order) {
     const itemIndex = this.items.findIndex(item => item.id === order.id)
 

@@ -21,6 +21,7 @@ export interface OrdersRepository {
     params: PaginationParams
   ): Promise<Order[]>
   findById(orderId: string): Promise<Order | null>
+  findByIdWithItems(orderId: string): Promise<Order | null>
   create(order: Order): Promise<void>
   delete(order: Order): Promise<void>
   save(order: Order): Promise<void>

@@ -95,6 +95,6 @@ RN023: Administradores têm permissão total: gerenciar usuários e o menu.
 ## Pedidos
 
 - [x] Deve ser possível cadastrar um pedido
-- [ ] Deve ser possível listar os pedidos do dia
-- [ ] Deve ser possível buscar detalhes de um pedido pelo id
+- [x] Deve ser possível listar os pedidos do dia
+- [x] Deve ser possível buscar detalhes de um pedido pelo id
 - [ ] Deve ser possível editar o status de um pedido
