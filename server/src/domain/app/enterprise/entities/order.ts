@@ -5,13 +5,16 @@ import { OrderCreatedEvent } from '../events/order-created.event'
 import { OrderStatusUpdated } from '../events/order-status-updated.event'
 import { OrderItem } from './orderItem'
 
-export type OrderStatus =
-  | 'pending'
-  | 'processing'
-  | 'on_hold'
-  | 'canceled'
-  | 'finished'
-  | 'completed'
+export const orderStatusArray = [
+  'pending',
+  'processing',
+  'on_hold',
+  'canceled',
+  'finished',
+  'completed'
+] as const
+
+export type OrderStatus = (typeof orderStatusArray)[number]
 
 export interface OrderProps {
   attendantId: UniqueEntityID

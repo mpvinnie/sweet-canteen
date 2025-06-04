@@ -48,6 +48,42 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return filteredOrders
   }
 
+  async findManyWithItems(
+    { attendantId, customerName, status, date }: FindManyOrdersFilters,
+    { page }: PaginationParams
+  ) {
+    const filteredOrders = this.items
+      .filter(order => {
+        if (attendantId && order.attendantId.toString() !== attendantId) {
+          return false
+        }
+
+        if (
+          customerName &&
+          !order.customerName.toLowerCase().includes(customerName.toLowerCase())
+        ) {
+          return false
+        }
+
+        if (status && order.status !== status) {
+          return false
+        }
+
+        if (
+          date &&
+          !(order.createdAt >= date.from && order.createdAt <= date.to)
+        ) {
+          return false
+        }
+
+        return true
+      })
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+
+    return filteredOrders
+  }
+
   async findById(orderId: string) {
     const order = this.items.find(order => order.id.toString() === orderId)
 

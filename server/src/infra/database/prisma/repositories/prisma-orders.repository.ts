@@ -63,6 +63,33 @@ export class PrismaOrdersRepository implements OrdersRepository {
     })
   }
 
+  async findManyWithItems(
+    { attendantId, customerName, status, date }: FindManyOrdersFilters,
+    { page }: PaginationParams
+  ) {
+    const orders = await prisma.order.findMany({
+      where: {
+        attendantId,
+        customerName: {
+          contains: customerName,
+          mode: 'insensitive'
+        },
+        status: (status?.toUpperCase() as $Enums.OrderStatus) || undefined,
+        createdAt: {
+          gte: date?.from,
+          lte: date?.to
+        }
+      },
+      skip: (page - 1) * 20,
+      take: 20,
+      include: {
+        orderItems: true
+      }
+    })
+
+    return orders.map(PrismaOrderWithItemsMapper.toDomain)
+  }
+
   async findById(orderId: string) {
     const order = await prisma.order.findUnique({
       where: {

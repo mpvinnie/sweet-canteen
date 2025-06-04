@@ -1,7 +1,7 @@
 import { Either, right } from '@/core/either'
 import { Order, OrderStatus } from '../../enterprise/entities/order'
-import { OrdersRepository } from '../repositories/orders.repository'
 import { DateProvider } from '../providers/date.provider'
+import { OrdersRepository } from '../repositories/orders.repository'
 
 interface FetchTodayOrdersUseCaseRequest {
   attendantId?: string
@@ -31,7 +31,7 @@ export class FetchTodayOrdersUseCase {
   }: FetchTodayOrdersUseCaseRequest): Promise<FetchTodayOrdersUseCaseResponse> {
     const now = this.dateProvider.dateNow()
 
-    const orders = await this.ordersRepository.findMany(
+    const orders = await this.ordersRepository.findManyWithItems(
       {
         attendantId,
         customerName,

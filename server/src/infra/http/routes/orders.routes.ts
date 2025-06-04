@@ -1,11 +1,12 @@
 import { FastifyInstance } from 'fastify'
 import { fetchOrders } from '../controllers/fetch-orders'
+import { fetchTodayOrders } from '../controllers/fetch-today-orders'
 import { registerOrder } from '../controllers/register-order'
 import { ensurePermissions } from '../middlewares/ensure-permissions'
 
 export async function ordersRoutes(app: FastifyInstance) {
   app.get(
-    '/orders',
+    '/orders/history',
     {
       preHandler: [
         ensurePermissions({
@@ -14,6 +15,17 @@ export async function ordersRoutes(app: FastifyInstance) {
       ]
     },
     fetchOrders
+  )
+  app.get(
+    '/orders/today',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['list_today_orders']
+        })
+      ]
+    },
+    fetchTodayOrders
   )
   app.post(
     '/orders',

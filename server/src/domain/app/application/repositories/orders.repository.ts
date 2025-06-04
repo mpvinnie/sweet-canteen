@@ -16,6 +16,10 @@ export interface OrdersRepository {
     filters: FindManyOrdersFilters,
     params: PaginationParams
   ): Promise<Order[]>
+  findManyWithItems(
+    filters: FindManyOrdersFilters,
+    params: PaginationParams
+  ): Promise<Order[]>
   findById(orderId: string): Promise<Order | null>
   create(order: Order): Promise<void>
   delete(order: Order): Promise<void>
