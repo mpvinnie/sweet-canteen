@@ -76,7 +76,7 @@ RN023: Administradores têm permissão total: gerenciar usuários e o menu.
 - [x] Deve ser possível deletar um produto
 - [x] Deve ser possível editar um empregado
 - [x] Deve ser possível listar todos os pedidos
-- [ ] Deve ser possível deletar um pedido
+- [x] Deve ser possível deletar um pedido
 
 ## Atendentes
 

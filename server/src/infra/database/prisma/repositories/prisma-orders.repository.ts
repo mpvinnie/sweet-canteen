@@ -94,6 +94,26 @@ export class PrismaOrdersRepository implements OrdersRepository {
     const order = await prisma.order.findUnique({
       where: {
         id: orderId
+      },
+      select: {
+        id: true,
+        attendantId: true,
+        customerName: true,
+        observation: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            orderItems: true
+          }
+        },
+        orderItems: {
+          select: {
+            quantity: true,
+            unitPriceInCents: true
+          }
+        }
       }
     })
 
@@ -101,7 +121,14 @@ export class PrismaOrdersRepository implements OrdersRepository {
       return null
     }
 
-    return PrismaOrderMapper.toDomain(order)
+    const totalInCents = order.orderItems.reduce((total, item) => {
+      return total + item.quantity * item.unitPriceInCents
+    }, 0)
+
+    return PrismaOrderMapper.toDomain({
+      ...order,
+      totalInCents
+    })
   }
 
   async findByIdWithItems(orderId: string) {

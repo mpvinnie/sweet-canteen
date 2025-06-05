@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { changeOrderStatus } from '../controllers/change-order-status'
 import { deleteOrder } from '../controllers/delete-order'
 import { fetchOrders } from '../controllers/fetch-orders'
 import { fetchTodayOrders } from '../controllers/fetch-today-orders'
@@ -50,6 +51,17 @@ export async function ordersRoutes(app: FastifyInstance) {
       ]
     },
     registerOrder
+  )
+  app.put(
+    '/orders/:orderId',
+    {
+      preHandler: [
+        ensurePermissions({
+          permissions: ['update_order_status']
+        })
+      ]
+    },
+    changeOrderStatus
   )
   app.delete(
     '/orders/:orderId',
