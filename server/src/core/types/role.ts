@@ -10,6 +10,7 @@ export const RolePermissions: Record<Role, Permission[]> = {
     'edit_employee',
     'delete_product',
     'delete_employee',
+    'delete_order',
     'list_employees',
     'list_products',
     'list_orders'

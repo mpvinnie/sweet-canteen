@@ -51,6 +51,7 @@ model Product {
   priceInCents      Int
   available         Boolean   @default(false)
   availableQuantity Int
+  isActive          Boolean   @default(true) @map("is_active")
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime? @updatedAt @map("updated_at")
 
@@ -82,7 +83,7 @@ model Order {
   attendantId String @map("attendant_id")
   attendant   User   @relation(fields: [attendantId], references: [id])
 
-  orderItems OrderItem[]
+  orderItems OrderItem[] @relation("OrderToOrderItems")
 
   @@map("orders")
 }
@@ -94,10 +95,10 @@ model OrderItem {
   unitPriceInCents Int
 
   orderId String @map("order_id")
-  order   Order  @relation(fields: [orderId], references: [id])
+  order   Order  @relation("OrderToOrderItems", fields: [orderId], references: [id], onDelete: Cascade)
 
   productId String  @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
 
   @@map("orderItems")
 }

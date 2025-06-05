@@ -34,6 +34,7 @@ CREATE TABLE "products" (
     "priceInCents" INTEGER NOT NULL,
     "available" BOOLEAN NOT NULL DEFAULT false,
     "availableQuantity" INTEGER NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "category_id" TEXT NOT NULL,
@@ -79,7 +80,7 @@ ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("
 ALTER TABLE "orders" ADD CONSTRAINT "orders_attendant_id_fkey" FOREIGN KEY ("attendant_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orderItems" ADD CONSTRAINT "orderItems_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "orderItems" ADD CONSTRAINT "orderItems_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orderItems" ADD CONSTRAINT "orderItems_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

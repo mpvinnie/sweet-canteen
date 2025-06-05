@@ -15,6 +15,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   ) {
     const products = await prisma.product.findMany({
       where: {
+        isActive: true,
         name: {
           contains: name,
           mode: 'insensitive'
@@ -35,6 +36,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   ) {
     const products = await prisma.product.findMany({
       where: {
+        isActive: true,
         name: {
           contains: name,
           mode: 'insensitive'
@@ -55,6 +57,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   async findManyByIds(productIds: string[]) {
     const products = await prisma.product.findMany({
       where: {
+        isActive: true,
         id: {
           in: productIds
         }
@@ -67,6 +70,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   async findById(id: string) {
     const product = await prisma.product.findUnique({
       where: {
+        isActive: true,
         id
       }
     })
@@ -81,6 +85,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   async findByIdWithCategory(id: string) {
     const product = await prisma.product.findUnique({
       where: {
+        isActive: true,
         id
       },
       include: {
@@ -125,9 +130,12 @@ export class PrismaProductsRepository implements ProductsRepository {
   }
 
   async delete(product: Product) {
-    await prisma.product.delete({
+    await prisma.product.update({
       where: {
         id: product.id.toString()
+      },
+      data: {
+        isActive: false
       }
     })
   }

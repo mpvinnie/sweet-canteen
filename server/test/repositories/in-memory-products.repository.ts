@@ -19,6 +19,10 @@ export class InMemoryProductsRepository implements ProductsRepository {
   ) {
     const filteredProducts = this.items
       .filter(product => {
+        if (!product.isActive) {
+          return false
+        }
+
         if (name && !product.name.toLowerCase().includes(name.toLowerCase())) {
           return false
         }
@@ -45,6 +49,10 @@ export class InMemoryProductsRepository implements ProductsRepository {
   ) {
     const filteredProducts = this.items
       .filter(product => {
+        if (!product.isActive) {
+          return false
+        }
+
         if (name && !product.name.toLowerCase().includes(name.toLowerCase())) {
           return false
         }
@@ -90,15 +98,17 @@ export class InMemoryProductsRepository implements ProductsRepository {
   }
 
   async findManyByIds(productIds: string[]) {
-    const products = this.items.filter(product =>
-      productIds.includes(product.id.toString())
+    const products = this.items.filter(
+      product => product.isActive && productIds.includes(product.id.toString())
     )
 
     return products
   }
 
   async findById(id: string) {
-    const product = this.items.find(product => product.id.toValue() === id)
+    const product = this.items.find(
+      product => product.id.toValue() === id && product.isActive
+    )
 
     if (!product) {
       return null
@@ -108,7 +118,9 @@ export class InMemoryProductsRepository implements ProductsRepository {
   }
 
   async findByIdWithCategory(id: string) {
-    const product = this.items.find(product => product.id.toString() === id)
+    const product = this.items.find(
+      product => product.id.toString() === id && product.isActive
+    )
 
     if (!product) {
       return null
@@ -178,8 +190,16 @@ export class InMemoryProductsRepository implements ProductsRepository {
   }
 
   async delete(product: Product) {
-    const productIndex = this.items.findIndex(item => item.id === product.id)
+    const findProduct = this.items.find(
+      item => item.id.equals(product.id) && item.isActive
+    )
 
-    this.items.splice(productIndex, 1)
+    if (!findProduct) {
+      throw new Error(
+        `Product with ID "${product.id.toString()}" does not exist.`
+      )
+    }
+
+    findProduct.delete()
   }
 }

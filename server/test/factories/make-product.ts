@@ -1,6 +1,6 @@
-import { faker } from '@faker-js/faker'
-import { Product, ProductProps } from '@/domain/app/enterprise/entities/product'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Product, ProductProps } from '@/domain/app/enterprise/entities/product'
+import { faker } from '@faker-js/faker'
 
 export function makeProduct(
   override: Partial<ProductProps> = {},

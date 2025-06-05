@@ -23,7 +23,7 @@ describe('Delete product', () => {
       productId: newProduct.id.toString()
     })
 
-    expect(productsRepository.items).toHaveLength(0)
+    expect(productsRepository.items[0].isActive).toBe(false)
   })
 
   it('should not be able to delete a non-existing product', async () => {

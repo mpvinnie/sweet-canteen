@@ -8,6 +8,7 @@ export interface ProductProps {
   priceInCents: number
   available: boolean
   availableQuantity: number
+  isActive: boolean
   categoryId: UniqueEntityID
   createdAt: Date
   updatedAt?: Date
@@ -15,12 +16,13 @@ export interface ProductProps {
 
 export class Product extends Entity<ProductProps> {
   static create(
-    props: Optional<ProductProps, 'available' | 'createdAt'>,
+    props: Optional<Omit<ProductProps, 'isActive'>, 'available' | 'createdAt'>,
     id?: UniqueEntityID
   ) {
     const product = new Product(
       {
         ...props,
+        isActive: true,
         available: props.available ?? false,
         createdAt: props.createdAt ?? new Date()
       },
@@ -32,6 +34,11 @@ export class Product extends Entity<ProductProps> {
 
   private touch() {
     this.props.updatedAt = new Date()
+  }
+
+  delete() {
+    this.props.isActive = false
+    this.touch()
   }
 
   get name() {
@@ -81,6 +88,10 @@ export class Product extends Entity<ProductProps> {
 
     this.props.availableQuantity = availableQuantity
     this.touch()
+  }
+
+  get isActive() {
+    return this.props.isActive
   }
 
   get categoryId() {
