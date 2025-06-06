@@ -7,5 +7,7 @@ app
     port: env.PORT
   })
   .then(() => {
-    console.log('👨🏻‍🍳 Http Server Running!')
+    console.log('👨🏻‍🍳 Http Server Running!\n\n')
+    console.log('📝 Rotas disponíveis:')
+    console.log(app.printRoutes())
   })
