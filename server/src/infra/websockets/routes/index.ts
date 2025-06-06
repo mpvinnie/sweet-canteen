@@ -1,5 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { OnOrderCreated } from '@/domain/realtime/application/subscribers/on-order-created'
+import { OnOrderStatusUpdated } from '@/domain/realtime/application/subscribers/on-order-status-updated'
 import { RedisOnlineUsersRepository } from '@/infra/cache/redis/repositories/redis-online-users.repository'
 import { makeConnectUserUseCase } from '@/infra/factories/make-connect-user'
 import { makeDisconnectUserUseCase } from '@/infra/factories/make-disconnect-user'
@@ -14,6 +15,7 @@ export async function websocketRoutes(app: FastifyInstance) {
   const connectUser = makeConnectUserUseCase()
   const disconnectUser = makeDisconnectUserUseCase()
   new OnOrderCreated(onlineUsersRepository, socketProvider)
+  new OnOrderStatusUpdated(onlineUsersRepository, socketProvider)
 
   app.get(
     '/',

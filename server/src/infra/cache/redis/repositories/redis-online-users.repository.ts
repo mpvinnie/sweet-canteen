@@ -46,8 +46,7 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
     const users = await redis.smembers(this.getRoleKey(role))
 
     return users.map(raw => {
-      const onlineUser = RedisOnlineUsersMapper.toDomain(raw)
-      return OnlineUser.create(onlineUser)
+      return RedisOnlineUsersMapper.toDomain(raw)
     })
   }
 
