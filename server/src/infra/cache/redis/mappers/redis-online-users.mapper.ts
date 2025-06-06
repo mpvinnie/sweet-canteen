@@ -14,7 +14,7 @@ export class RedisOnlineUsersMapper {
 
   static toRedis(onlineUser: OnlineUser): string {
     return JSON.stringify({
-      userId: onlineUser.id.toString(),
+      userId: onlineUser.userId.toString(),
       role: onlineUser.role,
       socketId: onlineUser.socketId
     })

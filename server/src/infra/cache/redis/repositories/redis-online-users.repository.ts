@@ -25,7 +25,7 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
     await redis.expire(this.getSocketKey(socketId), 60 * 60) // 1h
   }
 
-  async removeByUserId(userId: string) {
+  async removeBySocketId(socketId: string) {
     const keys = await redis.keys('socket-user:*')
 
     for (const key of keys) {
@@ -35,7 +35,7 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
 
       const onlineUser = RedisOnlineUsersMapper.toDomain(data)
 
-      if (onlineUser.userId.toString() === userId) {
+      if (onlineUser.socketId === socketId) {
         await redis.del(key)
         await redis.srem(this.getRoleKey(onlineUser.role), data)
       }

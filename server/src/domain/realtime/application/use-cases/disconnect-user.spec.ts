@@ -1,5 +1,5 @@
-import { InMemoryOnlineUsersRepository } from 'test/repositories/in-memory-online-users.repository'
 import { makeOnlineUser } from 'test/factories/make-online-user'
+import { InMemoryOnlineUsersRepository } from 'test/repositories/in-memory-online-users.repository'
 import { DisconnectUserUseCase } from './disconnect-user'
 
 let onlineUsersRepository: InMemoryOnlineUsersRepository
@@ -16,7 +16,7 @@ describe('Disconnect user', () => {
     await onlineUsersRepository.add(onlineUser)
 
     const result = await sut.execute({
-      userId: onlineUser.userId.toString()
+      socketId: onlineUser.socketId
     })
 
     expect(result.isRight()).toBe(true)

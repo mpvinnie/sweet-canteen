@@ -1,13 +1,14 @@
-import { Either, left, right } from '@/core/either'
-import { OnlineUser } from '../../enterprise/entities/online-user'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { Either, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
+import { Role } from '@/core/types/role'
+import { OnlineUser } from '../../enterprise/entities/online-user'
 import { OnlineUsersRepository } from '../repositories/online-users.repository'
-import { UsersRepository } from '@/domain/app/application/repositories/users.repository'
 
 interface ConnectUserUseCaseRequest {
   userId: string
   socketId: string
+  role: Role
 }
 
 type ConnectUserUseCaseResponse = Either<
@@ -18,25 +19,17 @@ type ConnectUserUseCaseResponse = Either<
 >
 
 export class ConnectUserUseCase {
-  constructor(
-    private usersRepository: UsersRepository,
-    private onlineUsersRepository: OnlineUsersRepository
-  ) {}
+  constructor(private onlineUsersRepository: OnlineUsersRepository) {}
 
   async execute({
     userId,
+    role,
     socketId
   }: ConnectUserUseCaseRequest): Promise<ConnectUserUseCaseResponse> {
-    const user = await this.usersRepository.findById(userId)
-
-    if (!user) {
-      return left(new ResourceNotFoundError())
-    }
-
     const onlineUser = OnlineUser.create({
       userId: new UniqueEntityID(userId),
       socketId,
-      role: user.role
+      role
     })
 
     await this.onlineUsersRepository.add(onlineUser)

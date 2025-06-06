@@ -9,8 +9,13 @@ export class InMemoryOnlineUsersRepository implements OnlineUsersRepository {
     this.onlineUsers.set(onlineUser.userId.toString(), onlineUser)
   }
 
-  async removeByUserId(userId: string) {
-    this.onlineUsers.delete(userId)
+  async removeBySocketId(socketId: string) {
+    for (const [userId, onlineUser] of this.onlineUsers.entries()) {
+      if (onlineUser.socketId === socketId) {
+        this.onlineUsers.delete(userId)
+        break
+      }
+    }
   }
 
   async getAllByRole(role: Role) {

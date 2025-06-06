@@ -1,7 +1,8 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { OnOrderCreated } from '@/domain/realtime/application/subscribers/on-order-created'
-import { OnlineUser } from '@/domain/realtime/enterprise/entities/online-user'
 import { RedisOnlineUsersRepository } from '@/infra/cache/redis/repositories/redis-online-users.repository'
+import { makeConnectUserUseCase } from '@/infra/factories/make-connect-user'
+import { makeDisconnectUserUseCase } from '@/infra/factories/make-disconnect-user'
 import { WebSocketProvider } from '@/infra/providers/web-socket-provider'
 import { WebSocket } from '@fastify/websocket'
 import { FastifyInstance, FastifyRequest } from 'fastify'
@@ -10,6 +11,8 @@ import { wsJWTVerify } from '../middlewares/ws-jwt-verify'
 export async function websocketRoutes(app: FastifyInstance) {
   const onlineUsersRepository = new RedisOnlineUsersRepository()
   const socketProvider = new WebSocketProvider()
+  const connectUser = makeConnectUserUseCase()
+  const disconnectUser = makeDisconnectUserUseCase()
   new OnOrderCreated(onlineUsersRepository, socketProvider)
 
   app.get(
@@ -19,15 +22,13 @@ export async function websocketRoutes(app: FastifyInstance) {
       const socketId = new UniqueEntityID().toString()
 
       try {
-        const onlineUser = OnlineUser.create({
-          socketId,
-          userId: new UniqueEntityID(request.user.sub),
+        await connectUser.execute({
+          socketId: socketId,
+          userId: request.user.sub,
           role: request.user.role
         })
 
         socketProvider.addSocket(socketId, socket)
-
-        await onlineUsersRepository.add(onlineUser)
 
         console.log(`🟢 Socket connected with id ${socketId}`)
       } catch (err) {
@@ -38,7 +39,10 @@ export async function websocketRoutes(app: FastifyInstance) {
       socket.on('close', async () => {
         try {
           socketProvider.removeSocket(socketId)
-          await onlineUsersRepository.removeByUserId(request.user.sub)
+
+          await disconnectUser.execute({
+            socketId: socketId
+          })
         } catch (err) {
           socket.close()
         }
