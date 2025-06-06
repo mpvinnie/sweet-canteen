@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import {
   FindManyOrdersFilters,
@@ -152,6 +153,8 @@ export class PrismaOrdersRepository implements OrdersRepository {
     await prisma.order.create({
       data: PrismaOrderWithItemsMapper.toPrisma(order)
     })
+
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
   async delete(order: Order) {
@@ -169,5 +172,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
       data: PrismaOrderMapper.toPrisma(order)
     })
+
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 }

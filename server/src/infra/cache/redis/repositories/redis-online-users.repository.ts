@@ -1,8 +1,8 @@
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Role } from '@/core/types/role'
 import { OnlineUsersRepository } from '@/domain/realtime/application/repositories/online-users.repository'
 import { OnlineUser } from '@/domain/realtime/enterprise/entities/online-user'
 import { redis } from '@/infra/cache/redis'
+import { RedisOnlineUsersMapper } from '../mappers/redis-online-users.mapper'
 
 export class RedisOnlineUsersRepository implements OnlineUsersRepository {
   private getRoleKey(role: Role) {
@@ -14,13 +14,13 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
   }
 
   async add(onlineUser: OnlineUser) {
-    const { userId, role, socketId } = onlineUser
+    const { role, socketId } = onlineUser
 
-    const userData = JSON.stringify({ userId, role, socketId })
+    const onlinUserData = RedisOnlineUsersMapper.toRedis(onlineUser)
 
-    await redis.sadd(this.getRoleKey(role), userData)
+    await redis.sadd(this.getRoleKey(role), onlinUserData)
 
-    await redis.set(this.getSocketKey(socketId), userData)
+    await redis.set(this.getSocketKey(socketId), onlinUserData)
 
     await redis.expire(this.getSocketKey(socketId), 60 * 60) // 1h
   }
@@ -33,11 +33,11 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
 
       if (!data) continue
 
-      const parsed = JSON.parse(data)
+      const onlineUser = RedisOnlineUsersMapper.toDomain(data)
 
-      if (parsed.userId.value === userId) {
+      if (onlineUser.userId.toString() === userId) {
         await redis.del(key)
-        await redis.srem(this.getRoleKey(parsed.role), data)
+        await redis.srem(this.getRoleKey(onlineUser.role), data)
       }
     }
   }
@@ -46,12 +46,8 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
     const users = await redis.smembers(this.getRoleKey(role))
 
     return users.map(raw => {
-      const { userId, role, socketId } = JSON.parse(raw)
-      return OnlineUser.create({
-        userId: new UniqueEntityID(userId.role),
-        role,
-        socketId
-      })
+      const onlineUser = RedisOnlineUsersMapper.toDomain(raw)
+      return OnlineUser.create(onlineUser)
     })
   }
 
@@ -71,8 +67,8 @@ export class RedisOnlineUsersRepository implements OnlineUsersRepository {
     const data = await redis.get(this.getSocketKey(socketId))
     if (!data) return
 
-    const parsed = JSON.parse(data)
-    if (parsed.userId.value !== userId) return
+    const onlineUser = RedisOnlineUsersMapper.toDomain(data)
+    if (onlineUser.userId.toString() !== userId) return
 
     await redis.expire(this.getSocketKey(socketId), 60 * 60)
   }
