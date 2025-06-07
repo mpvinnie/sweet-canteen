@@ -1,5 +1,5 @@
-import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ValueObject } from '@/core/entities/value-object'
 import { Role } from '@/core/types/role'
 
 export interface OnlineUserProps {
@@ -8,16 +8,9 @@ export interface OnlineUserProps {
   role: Role
 }
 
-export class OnlineUser extends Entity<OnlineUserProps> {
-  static create(props: OnlineUserProps, id?: UniqueEntityID) {
-    const onlineUser = new OnlineUser(
-      {
-        ...props
-      },
-      id
-    )
-
-    return onlineUser
+export class OnlineUser extends ValueObject<OnlineUserProps> {
+  static create(props: OnlineUserProps) {
+    return new OnlineUser(props)
   }
 
   get userId() {

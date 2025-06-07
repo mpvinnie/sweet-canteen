@@ -2,8 +2,8 @@ import { Either, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found.error'
 import { Role } from '@/core/types/role'
-import { OnlineUser } from '../../enterprise/entities/online-user'
 import { OnlineUsersRepository } from '../repositories/online-users.repository'
+import { OnlineUser } from './value-objects/online-user'
 
 interface ConnectUserUseCaseRequest {
   userId: string

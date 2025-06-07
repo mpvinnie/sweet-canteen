@@ -1,5 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { OnlineUser } from '@/domain/realtime/enterprise/entities/online-user'
+import { OnlineUser } from '@/domain/realtime/application/use-cases/value-objects/online-user'
 
 export class RedisOnlineUsersMapper {
   static toDomain(raw: string): OnlineUser {
