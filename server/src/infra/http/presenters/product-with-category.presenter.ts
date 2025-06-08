@@ -1,3 +1,4 @@
+import uploadConfig from '@/core/config/upload'
 import { ProductWithCategory } from '@/domain/app/application/use-cases/value-objects/product-with-category'
 
 export class ProductWithCategoryPresenter {
@@ -10,6 +11,8 @@ export class ProductWithCategoryPresenter {
       availableQuantity: productWithComment.availableQuantity,
       categoryId: productWithComment.categoryId.toString(),
       category: productWithComment.category,
+      image: productWithComment.image,
+      imageURL: `${uploadConfig.imageBaseURL()}/${productWithComment.image}`,
       available: productWithComment.available,
       createdAt: productWithComment.createdAt,
       updatedAt: productWithComment.updatedAt

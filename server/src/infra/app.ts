@@ -1,4 +1,7 @@
+import uploadConfig from '@/core/config/upload'
 import fastifyJwt from '@fastify/jwt'
+import fastifyMultipart from '@fastify/multipart'
+import fastifyStatic from '@fastify/static'
 import fastifyWebsocket from '@fastify/websocket'
 import fastify from 'fastify'
 import { ZodError } from 'zod'
@@ -11,7 +14,12 @@ export const app = fastify()
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET
 })
+app.register(fastifyStatic, {
+  root: uploadConfig.uploadFolder,
+  prefix: `/${env.STORAGE_BUCKET}/`
+})
 app.register(fastifyWebsocket)
+app.register(fastifyMultipart)
 
 app.register(appRoutes)
 app.register(websocketRoutes)

@@ -52,6 +52,7 @@ model Product {
   available         Boolean   @default(false)
   availableQuantity Int
   isActive          Boolean   @default(true) @map("is_active")
+  image             String    @unique
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime? @updatedAt @map("updated_at")
 

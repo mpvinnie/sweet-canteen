@@ -1,6 +1,6 @@
 import { Role } from '@/core/types/role'
 import { OnlineUsersRepository } from '@/domain/realtime/application/repositories/online-users.repository'
-import { OnlineUser } from '@/domain/realtime/enterprise/entities/online-user'
+import { OnlineUser } from '@/domain/realtime/application/use-cases/value-objects/online-user'
 import { redis } from '@/infra/cache/redis'
 import { RedisOnlineUsersMapper } from '../mappers/redis-online-users.mapper'
 

@@ -20,6 +20,7 @@ export class PrismaProductWithCategoryMapper {
       categoryId: new UniqueEntityID(raw.categoryId),
       category: raw.category.name,
       available: raw.available,
+      image: raw.image,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt ?? undefined
     })

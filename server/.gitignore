@@ -2,3 +2,9 @@ node_modules
 build
 .env
 /generated/prisma
+
+tmp/*
+!tmp/uploads
+
+tmp/uploads/*
+!tmp/uploads/.gitkeep

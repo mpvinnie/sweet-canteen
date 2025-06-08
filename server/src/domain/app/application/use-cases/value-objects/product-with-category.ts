@@ -10,6 +10,7 @@ export interface ProductWithCategoryProps {
   categoryId: UniqueEntityID
   category: string
   available: boolean
+  image: string
   createdAt: Date
   updatedAt?: Date
 }
@@ -77,6 +78,10 @@ export class ProductWithCategory extends ValueObject<ProductWithCategoryProps> {
 
   set available(available: boolean) {
     this.props.available = available
+  }
+
+  get image() {
+    return this.props.image
   }
 
   get createdAt() {

@@ -13,6 +13,7 @@ export function makeProduct(
       priceInCents: Number(faker.commerce.price({ max: 5000 })),
       availableQuantity: faker.number.int(20),
       categoryId: new UniqueEntityID('category-id'),
+      image: faker.image.avatar(),
       ...override
     },
     id

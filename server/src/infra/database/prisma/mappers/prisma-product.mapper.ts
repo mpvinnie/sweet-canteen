@@ -12,6 +12,7 @@ export class PrismaProductMapper {
         availableQuantity: raw.availableQuantity,
         categoryId: new UniqueEntityID(raw.categoryId),
         available: raw.available,
+        image: raw.image,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt ?? undefined
       },
@@ -28,6 +29,7 @@ export class PrismaProductMapper {
       availableQuantity: product.availableQuantity,
       categoryId: product.categoryId.toString(),
       available: product.available,
+      image: product.image,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt
     }

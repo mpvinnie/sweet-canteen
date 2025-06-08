@@ -8,7 +8,9 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   REDIS_HOST: z.string().default('127.0.0.1'),
   REDIS_PORT: z.coerce.number().default(6379),
-  REDIS_PASSWORD: z.string()
+  REDIS_PASSWORD: z.string(),
+  STORAGE_BASE_URL: z.string().default('http://localhost'),
+  STORAGE_BUCKET: z.string().default('uploads')
 })
 
 const _env = envSchema.safeParse(process.env)

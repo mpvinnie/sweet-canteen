@@ -1,5 +1,5 @@
 import { Role } from '@/core/types/role'
-import { OnlineUser } from '../../enterprise/entities/online-user'
+import { OnlineUser } from '../use-cases/value-objects/online-user'
 
 export interface OnlineUsersRepository {
   add(onlineUser: OnlineUser): Promise<void>

@@ -10,6 +10,7 @@ export interface ProductProps {
   availableQuantity: number
   isActive: boolean
   categoryId: UniqueEntityID
+  image: string
   createdAt: Date
   updatedAt?: Date
 }
@@ -101,6 +102,10 @@ export class Product extends Entity<ProductProps> {
   set categoryId(categoryId: UniqueEntityID) {
     this.props.categoryId = categoryId
     this.touch()
+  }
+
+  get image() {
+    return this.props.image
   }
 
   get createdAt() {

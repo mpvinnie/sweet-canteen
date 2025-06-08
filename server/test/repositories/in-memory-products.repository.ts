@@ -89,6 +89,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
           categoryId: product.categoryId,
           category: category.name,
           available: product.available,
+          image: product.image,
           createdAt: product.createdAt,
           updatedAt: product.updatedAt
         })
@@ -145,6 +146,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
       categoryId: product.categoryId,
       category: category.name,
       available: product.available,
+      image: product.image,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt
     })
@@ -184,6 +186,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
       categoryId: product.categoryId,
       category: category.name,
       available: product.available,
+      image: product.image,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt
     })

@@ -3,7 +3,7 @@ import { compare, hash } from 'bcrypt'
 
 export class BCryptHashProvider implements HashProvider {
   async hash(plain: string) {
-    return await hash(plain, 6)
+    return await hash(plain, 12)
   }
 
   async compare(plain: string, hash: string): Promise<boolean> {
