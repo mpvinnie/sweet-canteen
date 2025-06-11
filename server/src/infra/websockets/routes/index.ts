@@ -45,7 +45,7 @@ export async function websocketRoutes(app: FastifyInstance) {
           await disconnectUser.execute({
             socketId: socketId
           })
-        } catch (err) {
+        } catch {
           socket.close()
         }
       })
