@@ -2,9 +2,31 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
+const signInForm = z.object({
+  username: z.string(),
+  password: z.string()
+})
+
+type SignInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
   useDocumentTitle('Sign In | sweet.canteen')
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = useForm<SignInForm>()
+
+  async function handleSignIn(data: SignInForm) {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    toast.success('Login efetuado com sucesso.')
+  }
 
   return (
     <div className="p-8">
@@ -18,17 +40,19 @@ export function SignIn() {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Seu usuário</Label>
-            <Input id="email" />
+            <Label htmlFor="username">Seu usuário</Label>
+            <Input id="username" {...register('username')} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Sua senha</Label>
-            <Input id="password" type="password" />
+            <Input id="password" type="password" {...register('password')} />
           </div>
 
-          <Button className="w-full">Acessar painel</Button>
+          <Button disabled={isSubmitting} className="w-full">
+            Acessar painel
+          </Button>
         </form>
       </div>
     </div>
