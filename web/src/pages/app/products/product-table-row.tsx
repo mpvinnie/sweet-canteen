@@ -12,7 +12,7 @@ export function ProductTableRow() {
           <DialogTrigger asChild>
             <Button variant="outline" size="xs">
               <Search className="h-3 w-3" />
-              <span className="sr-only">Detalhes do pedido</span>
+              <span className="sr-only">Detalhes do produto</span>
             </Button>
           </DialogTrigger>
 
