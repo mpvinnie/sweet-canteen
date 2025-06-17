@@ -28,7 +28,7 @@ export function Header() {
               <UtensilsCrossed className="h-4 w-4" />
               Pedidos
             </NavLink>
-            <NavLink to={'/users'}>
+            <NavLink to={'/employees'}>
               <Users className="h-4 w-4" />
               Funcionários
             </NavLink>
