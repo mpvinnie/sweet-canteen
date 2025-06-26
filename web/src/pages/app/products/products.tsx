@@ -31,6 +31,8 @@ export function Products() {
                   <TableHead className="w-[140px]">Categoria</TableHead>
                   <TableHead className="w-[120px]">Disponível</TableHead>
                   <TableHead className="w-[180px]">Criado há</TableHead>
+                  <TableHead className="w-[32px]"></TableHead>
+                  <TableHead className="w-[32px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
